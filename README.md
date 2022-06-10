@@ -21,7 +21,7 @@ Cheats
 3. The extracted zip should result in a directory structure like `%USERPROFILE%\Documents\Captain of Industry\Mods\CaptainOfCheats\CaptainOfCheats.dll`. Fix your directory structure to look like this if it does not for any reason.
 4. If you have not previously used this mod in a game, you'll have to start a new game in order for it to initialize properly. Hopefully this changes in the future, but this is the current state of modding in COI.
 
-##Disclaimers 
+## Disclaimers 
 The game is in early access and is being patched often. Patches have and will likely continue to break the mod so please check the game version mentioned in the release you are using. Updates to patches will be created as time permits. 
 
 Disable automatic game updates and only update when a new Cheat Menu version is released if you want to keep it working during these patches. 
