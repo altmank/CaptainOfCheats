@@ -1,0 +1,116 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>Library</OutputType>
+		<TargetFramework>net46</TargetFramework>
+		<Configurations>Debug;Release</Configurations>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+		<DebugSymbols>true</DebugSymbols>
+		<DebugType>portable</DebugType>
+		<DefineConstants>DEBUG</DefineConstants>
+		<OutputPath>bin\Debug\</OutputPath>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'AlphaRelease|AnyCPU'">
+		<DebugSymbols>true</DebugSymbols>
+		<DebugType>portable</DebugType>
+		<DefineConstants/>
+		<Optimize>true</Optimize>
+		<OutputPath>bin\Release\</OutputPath>
+	</PropertyGroup>
+	<PropertyGroup>
+	</PropertyGroup>
+	<ItemGroup>
+		<Reference Include="System" />
+		<Reference Include="Mafi">
+			<HintPath>$(COI_ROOT)\Captain of Industry_Data\Managed\Mafi.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Mafi.Core">
+			<HintPath>$(COI_ROOT)\Captain of Industry_Data\Managed\Mafi.Core.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Mafi.Base">
+			<HintPath>$(COI_ROOT)\Captain of Industry_Data\Managed\Mafi.Base.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Mafi.Unity">
+			<HintPath>$(COI_ROOT)\Captain of Industry_Data\Managed\Mafi.Unity.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine">
+			<HintPath>$(COI_ROOT)\Captain of Industry_Data\Managed\UnityEngine.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.AssetBundleModule">
+			<HintPath>$(COI_ROOT)\Captain of Industry_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.CoreModule">
+			<HintPath>$(COI_ROOT)\Captain of Industry_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.InputLegacyModule">
+			<HintPath>$(COI_ROOT)\Captain of Industry_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.ParticleSystemModule">
+			<HintPath>$(COI_ROOT)\Captain of Industry_Data\Managed\UnityEngine.ParticleSystemModule.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.PhysicsModule">
+			<HintPath>$(COI_ROOT)\Captain of Industry_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.AnimationModule">
+			<HintPath>$(COI_ROOT)\Captain of Industry_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.ScreenCaptureModule">
+			<HintPath>$(COI_ROOT)\Captain of Industry_Data\Managed\UnityEngine.ScreenCaptureModule.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.TextRenderingModule">
+			<HintPath>$(COI_ROOT)\Captain of Industry_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.UIModule">
+			<HintPath>$(COI_ROOT)\Captain of Industry_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.TerrainPhysicsModule">
+			<HintPath>$(COI_ROOT)\Captain of Industry_Data\Managed\UnityEngine.TerrainPhysicsModule.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.UIElementsModule">
+			<HintPath>$(COI_ROOT)\Captain of Industry_Data\Managed\UnityEngine.UIElementsModule.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.VideoModule">
+			<HintPath>$(COI_ROOT)\Captain of Industry_Data\Managed\UnityEngine.VideoModule.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.AudioModule">
+			<HintPath>$(COI_ROOT)\Captain of Industry_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.ImageConversionModule">
+			<HintPath>$(COI_ROOT)\Captain of Industry_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.TerrainModule">
+			<HintPath>$(COI_ROOT)\Captain of Industry_Data\Managed\UnityEngine.TerrainModule.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.UI">
+			<HintPath>$(COI_ROOT)\Captain of Industry_Data\Managed\UnityEngine.UI.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Unity.VectorGraphics">
+			<HintPath>$(COI_ROOT)\Captain of Industry_Data\Managed\Unity.VectorGraphics.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+	</ItemGroup>
+</Project>
