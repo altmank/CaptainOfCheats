@@ -24,6 +24,6 @@ Cheats
 ## Disclaimers 
 The game is in early access and is being patched often. Patches have and will likely continue to break the mod so please check the game version mentioned in the release you are using. Updates to patches will be created as time permits. 
 
-Disable automatic game updates and only update when a new Cheat Menu version is released if you want to keep it working during these patches. 
+Disable automatic game updates and only update when a new mod version is released if you want to keep it working during these patches. 
 
 Additionally, no warranty is provided that this will not cause you issues in your game. You assume any and all risk by using this mod in your game.
