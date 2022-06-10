@@ -2,23 +2,15 @@
 	<PropertyGroup>
 		<OutputType>Library</OutputType>
 		<TargetFramework>net46</TargetFramework>
-		<Configurations>Debug;Release</Configurations>
+		<Configurations>Release</Configurations>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	</PropertyGroup>
-
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
 		<DebugSymbols>true</DebugSymbols>
 		<DebugType>portable</DebugType>
-		<DefineConstants>DEBUG</DefineConstants>
-		<OutputPath>bin\Debug\</OutputPath>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'AlphaRelease|AnyCPU'">
-		<DebugSymbols>true</DebugSymbols>
-		<DebugType>portable</DebugType>
-		<DefineConstants/>
+		<DefineConstants />
 		<Optimize>true</Optimize>
-		<OutputPath>bin\Release\</OutputPath>
+		<OutputPath>bin\Release\</OutputPath>		
 	</PropertyGroup>
 	<PropertyGroup>
 	</PropertyGroup>
@@ -112,5 +104,11 @@
 			<HintPath>$(COI_ROOT)\Captain of Industry_Data\Managed\Unity.VectorGraphics.dll</HintPath>
 			<Private>false</Private>
 		</Reference>
+	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="GitVersion.MsBuild" Version="5.10.3">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
 	</ItemGroup>
 </Project>

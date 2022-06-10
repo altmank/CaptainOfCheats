@@ -19,8 +19,7 @@ namespace CaptainOfCheats
         }
 
         public void RegisterPrototypes(ProtoRegistrator registrator)
-        {
-        }
+        { }
 
         public void RegisterDependencies(DependencyResolverBuilder depBuilder, ProtosDb protosDb, bool wasLoaded)
         {
