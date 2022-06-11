@@ -1,4 +1,6 @@
-﻿using CaptainOfCheats.Cheats;
+﻿using System;
+using System.Reflection;
+using CaptainOfCheats.Cheats;
 using CaptainOfCheats.Logging;
 using Mafi;
 using Mafi.Core.Mods;
@@ -14,8 +16,20 @@ namespace CaptainOfCheats
 
         public void Initialize(DependencyResolver resolver, bool gameWasLoaded)
         {
-            Logger.Log.Info("Running version v1.1.0");
+            var version = GetVersion();
+
+            Logger.Log.Info($"Running version v{version.Major}.{version.Minor}.{version.Build}");
             Logger.Log.Info($"Built for game version 0.4.3");
+        }
+
+        private static Version GetVersion()
+        {
+            var assembly = Assembly.GetAssembly(typeof(CaptainOfCheats.CaptainOfCheatsMod));
+            var gitVersionInformationType = assembly.GetType("GitVersionInformation");
+            var major = Convert.ToInt32(gitVersionInformationType.GetField("Major").GetValue(null));
+            var minor = Convert.ToInt32(gitVersionInformationType.GetField("Minor").GetValue(null));
+            var patch = Convert.ToInt32(gitVersionInformationType.GetField("Patch").GetValue(null));
+            return new Version(major, minor, patch);
         }
 
         public void RegisterPrototypes(ProtoRegistrator registrator)
