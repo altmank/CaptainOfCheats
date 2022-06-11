@@ -2,6 +2,7 @@
 using Mafi.Core;
 using Mafi.Core.Population;
 using Mafi.Core.Simulation;
+using Mafi.Serialization;
 
 namespace CaptainOfCheats.Cheats.Generate
 {
@@ -25,5 +26,15 @@ namespace CaptainOfCheats.Cheats.Generate
         {
             _freeUnityPerMonth = new Upoints(uPoints);
         }
+        
+        public static void Serialize(UnityCheatProvider value, BlobWriter writer)
+        {
+        }
+        
+        public static UnityCheatProvider Deserialize(BlobReader reader)
+        {
+            return null;
+        }
+        
     }
 }
