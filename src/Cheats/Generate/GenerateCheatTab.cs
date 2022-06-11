@@ -69,11 +69,12 @@ namespace CaptainOfCheats.Cheats.Generate
                 .NewSlider("kwSlider")
                 .SimpleSlider(Builder.Style.Panel.Slider)
                 .SetValuesRange(0, 100000)
+                .WholeNumbersOnly()
                 .OnValueChange(
-                    qty => { sliderLabel.SetText(Math.Round(qty).ToString()); },
+                    qty => { sliderLabel.SetText(qty.ToString()); },
                     qty =>
                     {
-                        sliderLabel.SetText(Math.Round(qty).ToString());
+                        sliderLabel.SetText(qty.ToString());
                         _kwGen = qty;
                         _electricityCheatProvider.SetFreeElectricity((int)qty);
                     })
@@ -95,11 +96,12 @@ namespace CaptainOfCheats.Cheats.Generate
                 .NewSlider("tFlopSlider")
                 .SimpleSlider(Builder.Style.Panel.Slider)
                 .SetValuesRange(0, 1000)
+                .WholeNumbersOnly()
                 .OnValueChange(
-                    qty => { sliderLabel.SetText(Math.Round(qty).ToString()); },
+                    qty => { sliderLabel.SetText(qty.ToString()); },
                     qty =>
                     {
-                        sliderLabel.SetText(Math.Round(qty).ToString());
+                        sliderLabel.SetText(qty.ToString());
                         _computingTFlopGen = qty;
                         _computingCheatProvider.SetFreeCompute((int)qty);
                     })
@@ -121,11 +123,12 @@ namespace CaptainOfCheats.Cheats.Generate
                 .NewSlider("unitySlider")
                 .SimpleSlider(Builder.Style.Panel.Slider)
                 .SetValuesRange(0, 1000)
+                .WholeNumbersOnly()
                 .OnValueChange(
-                    qty => { sliderLabel.SetText(Math.Round(qty).ToString()); },
+                    qty => { sliderLabel.SetText(qty.ToString()); },
                     qty =>
                     {
-                        sliderLabel.SetText(Math.Round(qty).ToString());
+                        sliderLabel.SetText(qty.ToString());
                         _unityGen = qty;
                         _unityCheatProvider.SetFreeUPoints((int)qty);
                     })
