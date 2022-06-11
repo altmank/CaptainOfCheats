@@ -1,6 +1,5 @@
 ﻿using Mafi;
 using Mafi.Core;
-using Mafi.Core.Notifications;
 using Mafi.Core.Population;
 using Mafi.Core.Simulation;
 
@@ -11,7 +10,7 @@ namespace CaptainOfCheats.Cheats.Generate
         private readonly UpointsManager _upointsManager;
         private Upoints _freeUnityPerMonth = Upoints.Zero;
 
-        public UnityCheatProvider(UpointsManager upointsManager, ICalendar calendar, INotificationsManager notificationsManager)
+        public UnityCheatProvider(UpointsManager upointsManager, ICalendar calendar)
         {
             _upointsManager = upointsManager;
             calendar.NewMonth.Add(this, OnNewMonth);
