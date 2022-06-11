@@ -1,40 +1,30 @@
-﻿using System;
-using System.Reflection;
-using CaptainOfCheats.Logging;
-using Mafi;
+﻿using Mafi;
 using Mafi.Core;
+using Mafi.Core.Notifications;
 using Mafi.Core.Population;
+using Mafi.Core.Simulation;
 
 namespace CaptainOfCheats.Cheats.Generate
 {
     public class UnityCheatProvider
     {
         private readonly UpointsManager _upointsManager;
-        private FieldInfo _freeUnityPerMonthField;
+        private Upoints _freeUnityPerMonth = Upoints.Zero;
 
-        public UnityCheatProvider(UpointsManager upointsManager)
+        public UnityCheatProvider(UpointsManager upointsManager, ICalendar calendar, INotificationsManager notificationsManager)
         {
             _upointsManager = upointsManager;
+            calendar.NewMonth.Add(this, OnNewMonth);
         }
 
-        private void SetAccessors()
+        private void OnNewMonth()
         {
-            if (!(_freeUnityPerMonthField is null)) return;
-            var managerType = typeof(CoreMod).Assembly.GetType("Mafi.Core.Population.UpointsManager");
-            if (managerType is null)
-            {
-                Logger.Log.Error("Unable to fetch the UpointsManager type.");
-                throw new Exception("Unable to fetch the UpointsManager type.");
-            }
-
-            _freeUnityPerMonthField = managerType.GetField("m_freeMonthlyUnity", BindingFlags.NonPublic | BindingFlags.Instance);
+            _upointsManager.GenerateUnity(IdsCore.UpointsCategories.FreeUnity, _freeUnityPerMonth);
         }
 
         public void SetFreeUPoints(int uPoints)
         {
-            SetAccessors();
-            //Not yet working in UPointsManager code
-            _freeUnityPerMonthField.SetValue(_upointsManager, new Upoints(uPoints));
+            _freeUnityPerMonth = new Upoints(uPoints);
         }
     }
 }

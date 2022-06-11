@@ -111,7 +111,7 @@ namespace CaptainOfCheats.Cheats.Generate
         private void BuildUnitySlider(StackContainer topOf)
         {
             Builder
-                .AddSectionTitle(topOf, new LocStrFormatted("Perpetual Unity Generation (Not yet implemented)"), new LocStrFormatted("Drag slider to change perpetual Unity amount generation"));
+                .AddSectionTitle(topOf, new LocStrFormatted("Perpetual Unity Generation (per Month)"), new LocStrFormatted("Drag slider to change perpetual Unity amount generation"));
 
             var sliderLabel = Builder
                 .NewTxt("")
