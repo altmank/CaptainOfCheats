@@ -14,8 +14,8 @@ namespace CaptainOfCheats
 
         public void Initialize(DependencyResolver resolver, bool gameWasLoaded)
         {
-            Logger.Log.Info("Running version v9");
-            Logger.Log.Info($"Built for game version 0.4.2a");
+            Logger.Log.Info("Running version v1.1.0");
+            Logger.Log.Info($"Built for game version 0.4.3");
         }
 
         public void RegisterPrototypes(ProtoRegistrator registrator)
