@@ -16,6 +16,7 @@ Cheats
 - Disable maintenance
 - Refill ground water/oil reserves
 - Terrain modification via mining/dumping designations
+- Tree removal
 
 ## Installation
 1. Download the mod zip file from the GitHub Release that cooresponds to your Captain Of Industry game version. If a release does not exist for your game version, using an another version may fail to load properly.
