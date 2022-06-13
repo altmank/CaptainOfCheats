@@ -17,12 +17,49 @@ namespace CaptainOfCheats.Cheats.Terrain
         private readonly ITerrainDumpingManager _terrainDumpingManager;
         private readonly ITerrainMiningManager _terrainMiningManager;
         private readonly TreeManager _treeManager;
+        private readonly VirtualResourceManager _virtualResourceManager;
+
+        public TerrainCheatProvider(ITerrainDesignationsManager terrainDesignationsManager, ProtosDb protosDb, 
+            ITerrainDumpingManager terrainDumpingManager, ITerrainMiningManager terrainMiningManager, TreeManager treeManager, VirtualResourceManager virtualResourceManager)
+        {
+            _terrainDesignationsManager = terrainDesignationsManager;
+            _protosDb = protosDb;
+            _terrainDumpingManager = terrainDumpingManager;
+            _terrainMiningManager = terrainMiningManager;
+            _treeManager = treeManager;
+            _virtualResourceManager = virtualResourceManager;
+        }
 
         public void AddTree()
         {
             
         }
+
+        public void RefillGroundWaterReserve()
+        {
+            var groundWater = _protosDb.First<VirtualResourceProductProto>(x => x.Id == IdsCore.Products.Groundwater);
+
+            var allGroundWaterResources = _virtualResourceManager.GetAllResourcesFor(groundWater.Value);
+
+            foreach (var groundWaterResource in allGroundWaterResources)
+            {
+                groundWaterResource.AddAsMuchAs(groundWaterResource.Capacity);
+                
+            }
+        }
         
+        public void RefillGroundCrudeReserve()
+        {
+            var groundCrude = _protosDb.First<VirtualResourceProductProto>(x => x.Id == IdsCore.Products.VirtualCrudeOil);
+
+            var allGroundCrudeResources = _virtualResourceManager.GetAllResourcesFor(groundCrude.Value);
+
+            foreach (var resource in allGroundCrudeResources)
+            {
+                resource.AddAsMuchAs(resource.Capacity);
+            }
+        }
+
         public void RemoveAllSelectedTrees()
         {
             var treeIds = _treeManager.EnumerateSelectedTrees().ToList();
@@ -48,29 +85,24 @@ namespace CaptainOfCheats.Cheats.Terrain
                 _treeManager.TryRemoveTree(treeId);
             }
         }
-        
-        public TerrainCheatProvider(ITerrainDesignationsManager terrainDesignationsManager, ProtosDb protosDb, 
-            ITerrainDumpingManager terrainDumpingManager, ITerrainMiningManager terrainMiningManager, TreeManager treeManager)
-        {
-            _terrainDesignationsManager = terrainDesignationsManager;
-            _protosDb = protosDb;
-            _terrainDumpingManager = terrainDumpingManager;
-            _terrainMiningManager = terrainMiningManager;
-            _treeManager = treeManager;
-        }
 
-        public void CompleteAllMiningDesignations(bool doNoTerrainPhysics = false)
+        public void CompleteAllMiningDesignations(bool doNoTerrainPhysics = false, bool ignoreMineTowerDesignations = true)
         {
-            var miningTerrainDesignations = _terrainMiningManager.MiningDesignations.Where(x => x.IsNotFulfilled);
+            var miningTerrainDesignations = _terrainMiningManager.MiningDesignations
+                .Where(x => x.IsNotFulfilled);
 
             foreach (var designation in miningTerrainDesignations)
             {
+                if (designation.ManagedByTowers.Count > 0 && ignoreMineTowerDesignations)
+                {
+                    continue;
+                }
                 HarvestTreesInTerrainDesignation(designation);
                 SetHeightToMatchDesignation(designation, doNoTerrainPhysics);
             }
         }
 
-        public void CompleteAllDumpingDesignations(ProductProto.ID looseMaterialProductId, bool doNoTerrainPhysics = false)
+        public void CompleteAllDumpingDesignations(ProductProto.ID looseMaterialProductId, bool doNoTerrainPhysics = false, bool ignoreMineTowerDesignations = true)
         {
             var looseProductProto = _protosDb.First<LooseProductProto>(x => x.Id == looseMaterialProductId);
 
@@ -79,6 +111,10 @@ namespace CaptainOfCheats.Cheats.Terrain
 
             foreach (var designation in dumpingDesignations)
             {
+                if (designation.ManagedByTowers.Count > 0 && ignoreMineTowerDesignations)
+                {
+                    continue;
+                }
                 HarvestTreesInTerrainDesignation(designation);
                 ChangeMaterial(designation, looseProductProto.Value);
                 SetHeightToMatchDesignation(designation, doNoTerrainPhysics);
@@ -97,21 +133,6 @@ namespace CaptainOfCheats.Cheats.Terrain
         {
             terrainDesignation.ForEachTile((tile, f) => { tile.SetHeight(GetTargetHeight(terrainDesignation, tile.TileCoord), doNoTerrainPhysics: doNoTerrainPhysics); });
         }
-
-        public void DepositUpToHeight(TerrainDesignation terrainDesignation)
-        {
-            var designations = _terrainDesignationsManager.Designations.Where(x => x.IsNotFulfilled);
-            var rock = _protosDb.First<LooseProductProto>(x => x.Id == Ids.Products.Rock);
-
-            foreach (var designation in designations)
-            {
-                var looseProductQuantity = new LooseProductQuantity(rock.Value, Quantity.MaxValue);
-                var terrainThickness = looseProductQuantity.ToTerrainThickness();
-
-                designation.ForEachTile((tile, f) => { tile.DepositLooseProductUpToHeight(terrainThickness, GetTargetHeight(terrainDesignation, tile.TileCoord), ThicknessTilesF.MaxValue); });
-            }
-        }
-
 
         private HeightTilesF GetTargetHeight(TerrainDesignation terrainDesignation, Tile2i position)
         {

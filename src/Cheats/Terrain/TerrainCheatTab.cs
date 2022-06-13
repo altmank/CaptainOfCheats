@@ -26,6 +26,7 @@ namespace CaptainOfCheats.Cheats.Terrain
         private readonly Dict<SwitchBtn, Func<bool>> _switchBtns = new Dict<SwitchBtn, Func<bool>>();
         private readonly IOrderedEnumerable<LooseProductProto> _looseProductProtos;
         private ProductProto.ID? _selectedLooseProductProto;
+        private bool _ignoreMineTowerDesignations = true;
 
         public TerrainCheatTab(NewInstanceOf<TerrainCheatProvider> cheatProvider, ProtosDb _protosDb
         ) : base(nameof(TerrainCheatTab), SyncFrequency.OncePerSec)
@@ -46,10 +47,16 @@ namespace CaptainOfCheats.Cheats.Terrain
             var terrainSelector = BuildTerrainSelector(topOf);
             var terrainPhysicsToggleSwitch = CreateTerrainPhysicsToggleSwitch();
             terrainPhysicsToggleSwitch.PutToRightOf(terrainSelector, terrainPhysicsToggleSwitch.GetWidth(),Offset.Right(-200f));
-            
+            var towerDesignationsToggleSwitch = CreateTerrainIgnoreMineTowerDesignationsToggleSwitch();
+            towerDesignationsToggleSwitch.PutToRightOf(terrainPhysicsToggleSwitch, towerDesignationsToggleSwitch.GetWidth(),Offset.Right(-250f));
+
             BuildMineButton(topOf);
             BuildDumpButton(topOf);
             BuildRemoveTreesButton(topOf);
+            BuildRefillGroundWaterButton(topOf);
+            BuildRefillGroundCrudeButton(topOf);
+            
+            
         }
 
         private Dropdwn BuildTerrainSelector(StackContainer topOf)
@@ -82,6 +89,18 @@ namespace CaptainOfCheats.Cheats.Terrain
             return toggleBtn;
         }
         
+        private SwitchBtn CreateTerrainIgnoreMineTowerDesignationsToggleSwitch()
+        {
+            var toggleBtn = Builder.NewSwitchBtn()
+                .SetText("Ignore Tower Designations")
+                .AddTooltip("When instantly completing mining or dumping operations, ignore designations under mine tower control.")
+                .SetOnToggleAction((toggleVal) => _ignoreMineTowerDesignations = toggleVal );
+            
+            _switchBtns.Add(toggleBtn, () => _ignoreMineTowerDesignations);
+
+            return toggleBtn;
+        }
+        
         private StackContainer CreateStackContainer()
         {
             var topOf = Builder
@@ -100,7 +119,7 @@ namespace CaptainOfCheats.Cheats.Terrain
                 .SetButtonStyle(Style.Global.PrimaryBtn)
                 .SetText(new LocStrFormatted("Instantly Complete Mining Designations"))
                 .AddToolTip("All areas currently designated for mining will have their dump operation completed immediately. Results in no resources for the player. WARNING: If terrain physics is turned on, be aware that large mining operations can take awhile to finish due to physics catching up.")
-                .OnClick(() => _cheatProvider.CompleteAllMiningDesignations(_disableTerrainPhysicsOnMiningAndDumping));
+                .OnClick(() => _cheatProvider.CompleteAllMiningDesignations(_disableTerrainPhysicsOnMiningAndDumping, _ignoreMineTowerDesignations));
 
             spawnProductBtn.AppendTo(topOf, spawnProductBtn.GetOptimalSize(), ContainerPosition.LeftOrTop, Offset.Top(10f));
         }
@@ -111,7 +130,7 @@ namespace CaptainOfCheats.Cheats.Terrain
                 .SetButtonStyle(Style.Global.PrimaryBtn)
                 .SetText(new LocStrFormatted("Instantly Complete Dumping Designations"))
                 .AddToolTip("All areas currently designated for dumping will have their dump operation completed immediately. Requires no resources from the player. If terrain physics is turned on, the shape you create will be altered by terrain physics after the material spawns in.")
-                .OnClick(() => _cheatProvider.CompleteAllDumpingDesignations((ProductProto.ID)_selectedLooseProductProto, _disableTerrainPhysicsOnMiningAndDumping));
+                .OnClick(() => _cheatProvider.CompleteAllDumpingDesignations((ProductProto.ID)_selectedLooseProductProto, _disableTerrainPhysicsOnMiningAndDumping, _ignoreMineTowerDesignations));
 
             spawnProductBtn.AppendTo(topOf, spawnProductBtn.GetOptimalSize(), ContainerPosition.LeftOrTop, Offset.Top(10f));
         }
@@ -125,7 +144,25 @@ namespace CaptainOfCheats.Cheats.Terrain
 
             spawnProductBtn.AppendTo(topOf, spawnProductBtn.GetOptimalSize(), ContainerPosition.LeftOrTop, Offset.Top(10f));
         }
+        private void BuildRefillGroundWaterButton(StackContainer topOf)
+        {
+            var spawnProductBtn = Builder.NewBtn("button")
+                .SetButtonStyle(Style.Global.PrimaryBtn)
+                .SetText(new LocStrFormatted("Refill Ground Water Reserves"))
+                .OnClick(() => _cheatProvider.RefillGroundWaterReserve());
+
+            spawnProductBtn.AppendTo(topOf, spawnProductBtn.GetOptimalSize(), ContainerPosition.LeftOrTop, Offset.Top(10f));
+        }
         
+        private void BuildRefillGroundCrudeButton(StackContainer topOf)
+        {
+            var spawnProductBtn = Builder.NewBtn("button")
+                .SetButtonStyle(Style.Global.PrimaryBtn)
+                .SetText(new LocStrFormatted("Refill Ground Crude Reserves"))
+                .OnClick(() => _cheatProvider.RefillGroundCrudeReserve());
+
+            spawnProductBtn.AppendTo(topOf, spawnProductBtn.GetOptimalSize(), ContainerPosition.LeftOrTop, Offset.Top(10f));
+        }
         
         public override void RenderUpdate(GameTime gameTime)
         {
