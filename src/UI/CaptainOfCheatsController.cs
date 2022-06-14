@@ -1,4 +1,5 @@
 ﻿using System;
+using CaptainOfCheats.Constants;
 using Mafi;
 using Mafi.Core.GameLoop;
 using Mafi.Unity;
@@ -24,7 +25,7 @@ namespace CaptainOfCheats.UI
 
         public override void RegisterUi(UiBuilder builder)
         {
-            _toolbarController.AddMainMenuButton("Captain Of Cheats", this, "Assets/CaptainOfCheats/Toolbar/captain.png", 1337f, _ => KeyBindings.FromKey(KbCategory.Tools, KeyCode.F8));
+            _toolbarController.AddMainMenuButton("Captain Of Cheats", this, IconsPaths.ToolbarCaptainWheel, 1337f, _ => KeyBindings.FromKey(KbCategory.Tools, KeyCode.F8));
             base.RegisterUi(builder);
         }
 

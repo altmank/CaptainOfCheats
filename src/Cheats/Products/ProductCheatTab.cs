@@ -24,11 +24,10 @@ namespace CaptainOfCheats.Cheats.Products
         private float _quantity = 250;
         private ProductProto.ID? _selectedProduct;
 
-        public ProductCheatTab(NewInstanceOf<ProductCheatProvider> cheatProvider, ProtosDb protosDb) : base(nameof(ProductCheatTab), SyncFrequency.OncePerSec)
+        public ProductCheatTab(NewInstanceOf<ProductCheatProvider> productCheatProvider, ProtosDb protosDb) : base(nameof(ProductCheatTab), SyncFrequency.OncePerSec)
         {
-            _cheatProvider = cheatProvider.Instance;
+            _cheatProvider = productCheatProvider.Instance;
             _protosDb = protosDb;
-
             _productProtos = _protosDb.Filter<ProductProto>(proto => proto.CanBeLoadedOnTruck).OrderBy(x => x);
         }
 
