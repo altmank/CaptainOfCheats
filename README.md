@@ -1,6 +1,6 @@
 ## Captain Of Cheats Mod
 
-A modding tool for Captain of Industry. It has a cheat menu that can be accessed via the F8 key or by clicking the right-most icon on your bottom toolbar.
+A modding tool for Captain of Industry. It has a cheat menu that can be accessed via the F8 key or by clicking the right-most ship wheel icon on your bottom toolbar.
 
 Cheats
 - Spawn any haulable product into your shipyard at specified quantities
