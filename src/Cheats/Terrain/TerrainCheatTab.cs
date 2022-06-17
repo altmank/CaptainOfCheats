@@ -157,7 +157,7 @@ namespace CaptainOfCheats.Cheats.Terrain
         {
             var btn = Builder.NewBtn("button")
                 .SetButtonStyle(Style.Global.PrimaryBtn)
-                .SetText(new LocStrFormatted("Instantly Dump"))
+                .SetText(new LocStrFormatted("Instant Dump"))
                 .AddToolTip(
                     "All areas currently designated for dumping will have their dump operation completed immediately. Requires no resources from the player. If terrain physics is turned on, the shape you create will be altered by terrain physics after the material spawns in.")
                 .OnClick(() => _cheatProvider.CompleteAllDumpingDesignations((ProductProto.ID)_selectedLooseProductProto, _disableTerrainPhysicsOnMiningAndDumping, _ignoreMineTowerDesignations));
