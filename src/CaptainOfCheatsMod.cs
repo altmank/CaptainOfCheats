@@ -19,7 +19,6 @@ namespace CaptainOfCheats
             var version = GetVersion();
 
             Logger.Log.Info($"Running version v{version.Major}.{version.Minor}.{version.Build}");
-            Logger.Log.Info($"Built for game version 0.4.3");
         }
 
         private static Version GetVersion()

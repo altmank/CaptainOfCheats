@@ -8,7 +8,7 @@ using Mafi.Core.Research;
 
 namespace CaptainOfCheats.Cheats.General
 {
-    public class ResearchCheatProvider : ICheatProvider
+    public class ResearchCheatProvider
     {
         private readonly IInputScheduler _inputScheduler;
         private readonly IMessageNotificationsManager _messageNotificationsManager;
@@ -23,19 +23,14 @@ namespace CaptainOfCheats.Cheats.General
             _messageNotificationsManager = messageNotificationsManager;
         }
 
-        public Lyst<ICheatCommandBase> Cheats => new Lyst<ICheatCommandBase>
-        {
-            new CheatButtonCommand("Finish Current Research", UnlockCurrentResearch)
-                { Tooltip = "Start research, and then use this command to instantly complete it. You can also use Instant Mode to complete started research immediately." },
-            new CheatButtonCommand("Unlock All Research", UnlockAllResearch) { Tooltip = "Unlocks all research including research that requires discoveries to research." }
-        };
 
-        private void UnlockCurrentResearch()
+
+        public void UnlockCurrentResearch()
         {
             _inputScheduler.ScheduleInputCmd(new ResearchCheatFinishCmd());
         }
 
-        private void UnlockAllResearch()
+        public void UnlockAllResearch()
         {
             var researchUnlockProtos = _researchManager.AllNodes.SelectMany(x => x.Proto.RequiredUnlockedProtos.ToLyst());
 

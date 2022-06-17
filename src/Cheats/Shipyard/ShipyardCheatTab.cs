@@ -21,13 +21,16 @@ namespace CaptainOfCheats.Cheats.Shipyard
     {
         private readonly ShipyardCheatProvider _shipyardCheatProvider;
         private readonly IEnumerable<ProductProto> _productProtos;
+        private readonly FleetCheatProvider _fleetCheatProvider;
         private readonly ProtosDb _protosDb;
         private float _quantity = 250;
         private ProductProto.ID? _selectedProduct;
 
-        public ShipyardCheatTab(NewInstanceOf<ShipyardCheatProvider> productCheatProvider, ProtosDb protosDb) : base(nameof(ShipyardCheatTab), SyncFrequency.OncePerSec)
+        public ShipyardCheatTab(NewInstanceOf<ShipyardCheatProvider> productCheatProvider, NewInstanceOf<FleetCheatProvider> fleetCheatProvider, ProtosDb protosDb) : base(nameof(ShipyardCheatTab),
+            SyncFrequency.OncePerSec)
         {
             _shipyardCheatProvider = productCheatProvider.Instance;
+            _fleetCheatProvider = fleetCheatProvider.Instance;
             _protosDb = protosDb;
             _productProtos = _protosDb.Filter<ProductProto>(proto => proto.CanBeLoadedOnTruck).OrderBy(x => x);
         }
@@ -37,12 +40,74 @@ namespace CaptainOfCheats.Cheats.Shipyard
 
         protected override void BuildUi()
         {
-            var topOf = CreateStackContainer();
-            BuildQuantitySlider(topOf);
-            BuildProductSelector(topOf);
-            BuildSpawnButton(topOf);
-            BuildRemoveButton(topOf);
-            BuildForceUnloadShipyardShipButton(topOf);
+            var tabContainer = CreateStackContainer();
+            
+            Builder.AddSectionTitle(tabContainer, new LocStrFormatted("Shipyard Product Storage"), new LocStrFormatted("Add or remove products in the Shipyard storage."), Offset.Zero);
+            var sectionTitlesContainer = Builder
+                .NewStackContainer("shipyardContainer")
+                .SetStackingDirection(StackContainer.Direction.LeftToRight)
+                .SetSizeMode(StackContainer.SizeMode.StaticDirectionAligned)
+                .SetItemSpacing(10f)
+                .AppendTo(tabContainer, offset: Offset.All(0), size: 30);
+
+            var quantitySectionTitle = Builder.CreateSectionTitle(new LocStrFormatted("Quantity"), new LocStrFormatted("Set the quantity of the product that will be affected by your add or remove product operation."));
+            quantitySectionTitle.AppendTo(sectionTitlesContainer,  quantitySectionTitle.GetPreferedWidth(), Mafi.Unity.UiFramework.Offset.Left(10));
+            
+            var productSectionTitle = Builder.CreateSectionTitle(new LocStrFormatted("Product"), new LocStrFormatted("Select the product to add/remove from your shipyard."));
+            productSectionTitle.AppendTo(sectionTitlesContainer, productSectionTitle.GetPreferedWidth(), Offset.Left(245));
+            
+            var quantityAndProductContainer = Builder
+                .NewStackContainer("quantityAndProductContainer")
+                .SetStackingDirection(StackContainer.Direction.LeftToRight)
+                .SetSizeMode(StackContainer.SizeMode.StaticDirectionAligned)
+                .SetItemSpacing(10f)
+                .AppendTo(tabContainer, offset: Offset.Left(10), size: 30);
+            
+            var quantitySlider = BuildQuantitySlider();
+            quantitySlider.AppendTo(quantityAndProductContainer, new Vector2(200, 28f), ContainerPosition.LeftOrTop);
+            
+            var buildProductSelector = BuildProductSelector();
+            buildProductSelector.AppendTo(quantityAndProductContainer, new Vector2(200, 28f), ContainerPosition.LeftOrTop, Offset.Left(100));
+
+            var thirdRowContainer = Builder
+                .NewStackContainer("secondRowContainer")
+                .SetStackingDirection(StackContainer.Direction.LeftToRight)
+                .SetSizeMode(StackContainer.SizeMode.StaticDirectionAligned)
+                .SetItemSpacing(10f)
+                .AppendTo(tabContainer,offset: Offset.Left(10), size: 30);
+
+            var spawnProductBtn = BuildAddProductBtn();
+            spawnProductBtn.AppendTo(thirdRowContainer, spawnProductBtn.GetOptimalSize(), ContainerPosition.LeftOrTop, Offset.Top(10f));
+
+            var removeButton = BuildRemoveProductBtn();
+            removeButton.AppendTo(thirdRowContainer, removeButton.GetOptimalSize(), ContainerPosition.LeftOrTop, Offset.Top(10f));
+
+            Panel horSep = this.Builder.NewPanel("separator").AppendTo<Panel>(tabContainer, new Vector2?(new Vector2(630f, 20f)), ContainerPosition.MiddleOrCenter, Offset.Top(20));
+            this.Builder.NewIconContainer("left").SetIcon("Assets/Unity/UserInterface/General/HorizontalGradientToLeft48.png", false).PutToLeftMiddleOf<IconContainer>((IUiElement) horSep, new Vector2(300f, 1f));
+            this.Builder.NewIconContainer("symbol").SetIcon("Assets/Unity/UserInterface/General/Tradable128.png").PutToCenterMiddleOf<IconContainer>((IUiElement) horSep, new Vector2(20f, 20f));
+            this.Builder.NewIconContainer("right").SetIcon("Assets/Unity/UserInterface/General/HorizontalGradientToRight48.png", false).PutToRightMiddleOf<IconContainer>((IUiElement) horSep, new Vector2(300f, 1f));
+            
+            
+            
+            Builder.AddSectionTitle(tabContainer, new LocStrFormatted("Main Ship"));
+            var mainShipPanel = Builder.NewPanel("mainShipPanel").SetBackground(Builder.Style.Panel.ItemOverlay);
+            mainShipPanel.AppendTo(tabContainer, size: 50f, Offset.All(0));
+
+            var mainShipBtnContainer = Builder
+                .NewStackContainer("mainShipBtnContainer")
+                .SetStackingDirection(StackContainer.Direction.LeftToRight)
+                .SetSizeMode(StackContainer.SizeMode.StaticDirectionAligned)
+                .SetItemSpacing(10f)
+                .PutToLeftOf(mainShipPanel, 0.0f, Offset.Left(10f));
+            
+            var forceUnloadShipBtn = BuildForceUnloadShipyardShipButton();
+            forceUnloadShipBtn.AppendTo(mainShipBtnContainer, forceUnloadShipBtn.GetOptimalSize(), ContainerPosition.MiddleOrCenter);
+            
+            var finishExplorationBtn = BuildFinishExplorationButton();
+            finishExplorationBtn.AppendTo(mainShipBtnContainer, finishExplorationBtn.GetOptimalSize(), ContainerPosition.MiddleOrCenter);
+            
+            var repairShipBtn = BuildRepairFleetButton();
+            repairShipBtn.AppendTo(mainShipBtnContainer, repairShipBtn.GetOptimalSize(), ContainerPosition.MiddleOrCenter);
         }
 
         private StackContainer CreateStackContainer()
@@ -57,54 +122,75 @@ namespace CaptainOfCheats.Cheats.Shipyard
             return topOf;
         }
 
-        private void BuildSpawnButton(StackContainer topOf)
+        private Btn BuildAddProductBtn()
         {
-            var spawnProductBtn = Builder.NewBtn("button")
+            var btn = Builder.NewBtn("button")
                 .SetButtonStyle(Style.Global.PrimaryBtn)
-                .SetText(new LocStrFormatted("Spawn Product in Shipyard"))
+                .SetText(new LocStrFormatted("Add Product"))
+                .AddToolTip("Add the product at the quantity selected into your Shipyard storage.")
                 .OnClick(() => _shipyardCheatProvider.AddItemToShipyard(_selectedProduct.Value, (int)_quantity));
 
-            spawnProductBtn.AppendTo(topOf, spawnProductBtn.GetOptimalSize(), ContainerPosition.LeftOrTop, Offset.Top(10f));
+            return btn;
+            
         }
 
-        private void BuildRemoveButton(StackContainer topOf)
+        private Btn BuildFinishExplorationButton()
         {
-            var spawnProductBtn = Builder.NewBtn("button")
+            var btn = Builder.NewBtn("button")
                 .SetButtonStyle(Style.Global.PrimaryBtn)
-                .SetText(new LocStrFormatted("Remove Product in Shipyard"))
+                .SetText(new LocStrFormatted("Finish Exploration"))
+                .AddToolTip("Set your ship to do an action and then press this button and they will complete it immediately.")
+                .OnClick(() => _fleetCheatProvider.FinishExploration());
+
+            return btn;
+        }
+
+        private Btn BuildRepairFleetButton()
+        {
+            var btn = Builder.NewBtn("button")
+                .SetButtonStyle(Style.Global.PrimaryBtn)
+                .SetText(new LocStrFormatted("Repair Ship"))
+                .AddToolTip("Repair your main ship to full health.")
+                .OnClick(() => _fleetCheatProvider.RepairFleet());
+
+            return btn;
+        }
+
+        private Btn BuildRemoveProductBtn()
+        {
+            var btn = Builder.NewBtn("button")
+                .SetButtonStyle(Style.Global.DangerBtn)
+                .SetText(new LocStrFormatted("Remove Product"))
+                .AddToolTip("WARNING: This deletes products, gone forever, poof.")
                 .OnClick(() => _shipyardCheatProvider.RemoveItemFromShipYard(_selectedProduct.Value, (int)_quantity));
 
-            spawnProductBtn.AppendTo(topOf, spawnProductBtn.GetOptimalSize(), ContainerPosition.LeftOrTop, Offset.Top(10f));
+            return btn;
         }
 
-        private void BuildForceUnloadShipyardShipButton(StackContainer buttonGroupContainer)
+        private Btn BuildForceUnloadShipyardShipButton()
         {
             var btn = Builder.NewBtn("button")
                 .SetButtonStyle(Style.Global.PrimaryBtn)
                 .SetText("Force Unload Ship")
+                .AddToolTip("Bypass shipyard cargo capacity check and forcefully unload your ship into your shipyard cargo.")
                 .OnClick(() => _shipyardCheatProvider.ForceUnloadShipyardShip());
-            btn.AppendTo(buttonGroupContainer, btn.GetOptimalSize(), ContainerPosition.LeftOrTop);
+            return btn;
         }
 
-        private void BuildProductSelector(StackContainer topOf)
+        private Dropdwn BuildProductSelector()
         {
-            Builder
-                .AddSectionTitle(topOf, new LocStrFormatted("Product"), new LocStrFormatted("Select the product to spawn"));
-
             var productDropdown = Builder
                 .NewDropdown("ProductDropDown")
                 .AddOptions(_productProtos.Select(x => x.Id.ToString().Replace("Product_", "")).ToList())
-                .OnValueChange(i => _selectedProduct = _productProtos.ElementAt(i)?.Id)
-                .AppendTo(topOf, new Vector2(200, 28f), ContainerPosition.LeftOrTop);
+                .OnValueChange(i => _selectedProduct = _productProtos.ElementAt(i)?.Id);
 
             _selectedProduct = _productProtos.ElementAt(0)?.Id;
+
+            return productDropdown;
         }
 
-        private void BuildQuantitySlider(StackContainer topOf)
+        private Slidder BuildQuantitySlider()
         {
-            Builder
-                .AddSectionTitle(topOf, new LocStrFormatted("Quantity"), new LocStrFormatted("Drag slider to change item cheat amount quantity"));
-
             var sliderLabel = Builder
                 .NewTxt("")
                 .SetTextStyle(Builder.Style.Global.TextControls)
@@ -120,9 +206,12 @@ namespace CaptainOfCheats.Cheats.Shipyard
                         sliderLabel.SetText(Math.Round(qty).ToString());
                         _quantity = qty;
                     })
-                .SetValue(_quantity)
-                .AppendTo(topOf, new Vector2(200, 28f), ContainerPosition.LeftOrTop);
+                .SetValue(_quantity);
+
+
             sliderLabel.PutToRightOf(qtySlider, 90f, Offset.Right(-110f));
+
+            return qtySlider;
         }
     }
 }

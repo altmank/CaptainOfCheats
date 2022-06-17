@@ -61,7 +61,7 @@ namespace CaptainOfCheats.Cheats.Weather
         private void CreateCheatButton(ICheatCommandBase cheatItem, CheatButtonCommand cheatButtonCommand, StackContainer buttonGroupContainer)
         {
             var btn = Builder.NewBtn("button")
-                .SetButtonStyle(Style.Global.GeneralBtn)
+                .SetButtonStyle(Style.Global.PrimaryBtn)
                 .SetText(new LocStrFormatted(cheatItem.Title))
                 .AddToolTip(cheatItem.Tooltip)
                 .OnClick(cheatButtonCommand.Action);
