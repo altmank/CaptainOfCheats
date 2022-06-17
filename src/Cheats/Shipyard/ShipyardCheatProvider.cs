@@ -1,20 +1,24 @@
 ﻿using Mafi;
+using Mafi.Collections;
 using Mafi.Core;
 using Mafi.Core.Economy;
 using Mafi.Core.Products;
 using Mafi.Core.Prototypes;
+using Mafi.Core.World;
 
 namespace CaptainOfCheats.Cheats.Products
 {
-    public class ProductCheatProvider
+    public class ShipyardCheatProvider
     {
         private readonly IAssetTransactionManager _assetTransactionManager;
         private readonly ProtosDb _protosDb;
+        private readonly TravelingFleetManager _travelingFleetManager;
 
-        public ProductCheatProvider(IAssetTransactionManager assetTransactionManager, ProtosDb protosDb)
+        public ShipyardCheatProvider(IAssetTransactionManager assetTransactionManager, ProtosDb protosDb,  TravelingFleetManager travelingFleetManager)
         {
             _assetTransactionManager = assetTransactionManager;
             _protosDb = protosDb;
+            _travelingFleetManager = travelingFleetManager;
         }
 
         public void AddItemToShipyard(ProductProto.ID product, int quantity = 1000)
@@ -27,6 +31,23 @@ namespace CaptainOfCheats.Cheats.Products
         {
             var productProto = _protosDb.First<ProductProto>(p => p.Id == product);
             _assetTransactionManager.RemoveProduct(new ProductQuantity(productProto.Value, new Quantity(quantity)), DestroyReason.Cheated);
+        }
+        
+        public void ForceUnloadShipyardShip()
+        {
+            var travelingFleet = _travelingFleetManager.TravelingFleet;
+            var shipyard = travelingFleet.Dock;
+            while (true)
+            {
+                ProductQuantity productQuantity = travelingFleet.TryUnloadCargo(Quantity.MaxValue,  new Set<ProductProto>());
+                if (productQuantity.IsEmpty)
+                {
+                    break;
+                }
+                shipyard.StoreProduct(productQuantity);
+            }
+            
+
         }
     }
 }

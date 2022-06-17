@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CaptainOfCheats.Cheats.Products;
 using Mafi;
 using Mafi.Core.Products;
 using Mafi.Core.Prototypes;
@@ -13,25 +14,25 @@ using Mafi.Unity.UiFramework.Components;
 using Mafi.Unity.UiFramework.Components.Tabs;
 using UnityEngine;
 
-namespace CaptainOfCheats.Cheats.Products
+namespace CaptainOfCheats.Cheats.Shipyard
 {
     [GlobalDependency(RegistrationMode.AsEverything)]
-    public class ProductCheatTab : Tab, ICheatProviderTab
+    public class ShipyardCheatTab : Tab, ICheatProviderTab
     {
-        private readonly ProductCheatProvider _cheatProvider;
+        private readonly ShipyardCheatProvider _shipyardCheatProvider;
         private readonly IEnumerable<ProductProto> _productProtos;
         private readonly ProtosDb _protosDb;
         private float _quantity = 250;
         private ProductProto.ID? _selectedProduct;
 
-        public ProductCheatTab(NewInstanceOf<ProductCheatProvider> productCheatProvider, ProtosDb protosDb) : base(nameof(ProductCheatTab), SyncFrequency.OncePerSec)
+        public ShipyardCheatTab(NewInstanceOf<ShipyardCheatProvider> productCheatProvider, ProtosDb protosDb) : base(nameof(ShipyardCheatTab), SyncFrequency.OncePerSec)
         {
-            _cheatProvider = productCheatProvider.Instance;
+            _shipyardCheatProvider = productCheatProvider.Instance;
             _protosDb = protosDb;
             _productProtos = _protosDb.Filter<ProductProto>(proto => proto.CanBeLoadedOnTruck).OrderBy(x => x);
         }
 
-        public string Name => "Products";
+        public string Name => "Shipyard";
         public string IconPath => Assets.Unity.UserInterface.Toolbar.CargoShip_svg;
 
         protected override void BuildUi()
@@ -41,6 +42,7 @@ namespace CaptainOfCheats.Cheats.Products
             BuildProductSelector(topOf);
             BuildSpawnButton(topOf);
             BuildRemoveButton(topOf);
+            BuildForceUnloadShipyardShipButton(topOf);
         }
 
         private StackContainer CreateStackContainer()
@@ -60,7 +62,7 @@ namespace CaptainOfCheats.Cheats.Products
             var spawnProductBtn = Builder.NewBtn("button")
                 .SetButtonStyle(Style.Global.PrimaryBtn)
                 .SetText(new LocStrFormatted("Spawn Product in Shipyard"))
-                .OnClick(() => _cheatProvider.AddItemToShipyard(_selectedProduct.Value, (int)_quantity));
+                .OnClick(() => _shipyardCheatProvider.AddItemToShipyard(_selectedProduct.Value, (int)_quantity));
 
             spawnProductBtn.AppendTo(topOf, spawnProductBtn.GetOptimalSize(), ContainerPosition.LeftOrTop, Offset.Top(10f));
         }
@@ -70,9 +72,18 @@ namespace CaptainOfCheats.Cheats.Products
             var spawnProductBtn = Builder.NewBtn("button")
                 .SetButtonStyle(Style.Global.PrimaryBtn)
                 .SetText(new LocStrFormatted("Remove Product in Shipyard"))
-                .OnClick(() => _cheatProvider.RemoveItemFromShipYard(_selectedProduct.Value, (int)_quantity));
+                .OnClick(() => _shipyardCheatProvider.RemoveItemFromShipYard(_selectedProduct.Value, (int)_quantity));
 
             spawnProductBtn.AppendTo(topOf, spawnProductBtn.GetOptimalSize(), ContainerPosition.LeftOrTop, Offset.Top(10f));
+        }
+
+        private void BuildForceUnloadShipyardShipButton(StackContainer buttonGroupContainer)
+        {
+            var btn = Builder.NewBtn("button")
+                .SetButtonStyle(Style.Global.PrimaryBtn)
+                .SetText("Force Unload Ship")
+                .OnClick(() => _shipyardCheatProvider.ForceUnloadShipyardShip());
+            btn.AppendTo(buttonGroupContainer, btn.GetOptimalSize(), ContainerPosition.LeftOrTop);
         }
 
         private void BuildProductSelector(StackContainer topOf)
