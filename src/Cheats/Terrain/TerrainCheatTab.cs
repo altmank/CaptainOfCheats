@@ -174,7 +174,7 @@ namespace CaptainOfCheats.Cheats.Terrain
                 .SetButtonStyle(Style.Global.PrimaryBtn)
                 .SetText(new LocStrFormatted("Change Terrain"))
                 .AddToolTip(
-                    "All areas currently designated for dumping will have their dump operation completed immediately but it will only change the top layer of the terrain and not change the height.")
+                    "All areas currently designated for dumping will be used as markers for where to change the terrain selected in the terrain dropdown. The height of the terrain will not change, only the material. Useful for making dirt land for farms.")
                 .OnClick(() => _cheatProvider.ChangeTerrain((ProductProto.ID)_selectedLooseProductProto, _disableTerrainPhysicsOnMiningAndDumping, _ignoreMineTowerDesignations));
 
             return btn;
