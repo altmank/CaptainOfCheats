@@ -68,6 +68,9 @@ namespace CaptainOfCheats.Cheats.Terrain
             var buildDumpButton = BuildDumpButton();
             buildDumpButton.AppendTo(instantTerrainButtonContainer, buildDumpButton.GetOptimalSize(), ContainerPosition.MiddleOrCenter);
 
+            var buildChangeTerrainButton = BuildChangeTerrainButton();
+            buildChangeTerrainButton.AppendTo(instantTerrainButtonContainer, buildChangeTerrainButton.GetOptimalSize(), ContainerPosition.MiddleOrCenter);
+            
 
             Builder.AddSectionTitle(tabContainer, new LocStrFormatted("Other"));
 
@@ -161,6 +164,18 @@ namespace CaptainOfCheats.Cheats.Terrain
                 .AddToolTip(
                     "All areas currently designated for dumping will have their dump operation completed immediately. Requires no resources from the player. If terrain physics is turned on, the shape you create will be altered by terrain physics after the material spawns in.")
                 .OnClick(() => _cheatProvider.CompleteAllDumpingDesignations((ProductProto.ID)_selectedLooseProductProto, _disableTerrainPhysicsOnMiningAndDumping, _ignoreMineTowerDesignations));
+
+            return btn;
+        }
+        
+        private Btn BuildChangeTerrainButton()
+        {
+            var btn = Builder.NewBtn("button")
+                .SetButtonStyle(Style.Global.PrimaryBtn)
+                .SetText(new LocStrFormatted("Change Terrain"))
+                .AddToolTip(
+                    "All areas currently designated for dumping will have their dump operation completed immediately but it will only change the top layer of the terrain and not change the height.")
+                .OnClick(() => _cheatProvider.ChangeTerrain((ProductProto.ID)_selectedLooseProductProto, _disableTerrainPhysicsOnMiningAndDumping, _ignoreMineTowerDesignations));
 
             return btn;
         }

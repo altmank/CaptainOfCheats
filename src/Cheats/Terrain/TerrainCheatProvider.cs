@@ -120,6 +120,23 @@ namespace CaptainOfCheats.Cheats.Terrain
                 SetHeightToMatchDesignation(designation, doNoTerrainPhysics);
             }
         }
+        
+        public void ChangeTerrain(ProductProto.ID looseMaterialProductId, bool doNoTerrainPhysics = false, bool ignoreMineTowerDesignations = true)
+        {
+            var looseProductProto = _protosDb.First<LooseProductProto>(x => x.Id == looseMaterialProductId);
+
+            var dumpingDesignations = _terrainDumpingManager.DumpingDesignations;
+
+            foreach (var designation in dumpingDesignations)
+            {
+                if (designation.ManagedByTowers.Count > 0 && ignoreMineTowerDesignations)
+                {
+                    continue;
+                }
+                HarvestTreesInTerrainDesignation(designation);
+                ChangeMaterial(designation, looseProductProto.Value);
+            }
+        }
 
         public void ChangeMaterial(TerrainDesignation terrainDesignation, LooseProductProto newTerrainMaterial)
         {
