@@ -133,7 +133,6 @@ namespace CaptainOfCheats.Cheats.Terrain
                 {
                     continue;
                 }
-                HarvestTreesInTerrainDesignation(designation);
                 ChangeMaterial(designation, looseProductProto.Value);
             }
         }

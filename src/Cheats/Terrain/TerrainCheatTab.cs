@@ -162,7 +162,7 @@ namespace CaptainOfCheats.Cheats.Terrain
                 .SetButtonStyle(Style.Global.PrimaryBtn)
                 .SetText(new LocStrFormatted("Instant Dump"))
                 .AddToolTip(
-                    "All areas currently designated for dumping will have their dump operation completed immediately. Requires no resources from the player. If terrain physics is turned on, the shape you create will be altered by terrain physics after the material spawns in. Warning, this change terrain down to bedrock under it.")
+                    "All areas currently designated for dumping will have their dump operation completed immediately. Requires no resources from the player. If terrain physics is turned on, the shape you create will be altered by terrain physics after the material spawns in.")
                 .OnClick(() => _cheatProvider.CompleteAllDumpingDesignations((ProductProto.ID)_selectedLooseProductProto, _disableTerrainPhysicsOnMiningAndDumping, _ignoreMineTowerDesignations));
 
             return btn;
@@ -174,7 +174,7 @@ namespace CaptainOfCheats.Cheats.Terrain
                 .SetButtonStyle(Style.Global.PrimaryBtn)
                 .SetText(new LocStrFormatted("Change Terrain"))
                 .AddToolTip(
-                    "All areas currently designated for dumping will be used as markers for where to change the terrain selected in the terrain dropdown. The height of the terrain will not change, only the material. Useful for making dirt land for farms. Warning, this change terrain down to bedrock under it.")
+                    "All areas currently designated for dumping will be used as markers for where to change the terrain selected in the terrain dropdown. The height of the terrain will not change, only the material. Useful for making dirt land for farms.")
                 .OnClick(() => _cheatProvider.ChangeTerrain((ProductProto.ID)_selectedLooseProductProto, _disableTerrainPhysicsOnMiningAndDumping, _ignoreMineTowerDesignations));
 
             return btn;
