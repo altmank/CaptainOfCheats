@@ -10,6 +10,8 @@ Cheats
 - Instant mode adds instant build, research, upgrade, spawning of vehicles and more
 - Unlock all research
 - Change vehicle cap
+- Increase vehicle capacity
+- Force unload ship
 - Change weather
 - Repair fleet and finish an in-progress fleet exploration command
 - Add/remove population
