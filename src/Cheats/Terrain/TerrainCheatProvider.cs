@@ -168,7 +168,7 @@ namespace CaptainOfCheats.Cheats.Terrain
             var thicknessTilesF = targetHeight - tile.Height;
             thicknessTilesF = thicknessTilesF.Min(maxDumped);
             var thickness = thicknessTilesF.Min(product.Thickness);
-            tile.DepositMaterial(product.Material, thickness, doNotRaiseEvents: doNotRaiseEvents, doNotDisruptTerrain: doNotDisruptTerrain, doNotChangeHeight: doNotChangeHeight);
+            tile.DepositMaterialOnTop(product.Material, thickness, doNotRaiseEvents: doNotRaiseEvents, doNotDisruptTerrain: doNotDisruptTerrain, doNotChangeHeight: doNotChangeHeight);
             product = new TerrainMaterialThickness(product.Material, product.Thickness - thickness);
         }
     }
