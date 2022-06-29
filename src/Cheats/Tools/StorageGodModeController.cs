@@ -1,4 +1,5 @@
-﻿using CaptainOfCheats.Constants;
+﻿using System;
+using CaptainOfCheats.Constants;
 using CaptainOfCheats.Extensions;
 using CaptainOfCheats.ReimplementedBaseClasses;
 using Mafi;
@@ -7,6 +8,7 @@ using Mafi.Core.Buildings.Storages;
 using Mafi.Core.Entities;
 using Mafi.Core.Entities.Static;
 using Mafi.Core.Factory.Transports;
+using Mafi.Core.GameLoop;
 using Mafi.Core.Gfx;
 using Mafi.Core.Input;
 using Mafi.Localization;
@@ -27,15 +29,36 @@ namespace CaptainOfCheats.Cheats.Tools
     {
         private readonly EntitiesIconRenderer _iconRenderer;
         private readonly ToolbarController _toolbarController;
+        private readonly IEntitiesManager _entitiesManager;
         private CursorStyle _cursorStyle;
 
         public StorageGodModeController(ToolbarController toolbarController, ShortcutsManager shortcutsManager, IUnityInputMgr inputManager, CursorPickingManager cursorPickingManager,
             CursorManager cursorManager,
-            AreaSelectionToolFactory areaSelectionToolFactory, IEntitiesManager entitiesManager, ObjectHighlighter highlighter, EntitiesRenderer entitiesRenderer, EntitiesIconRenderer iconRenderer)
+            AreaSelectionToolFactory areaSelectionToolFactory,
+            IEntitiesManager entitiesManager,
+            ObjectHighlighter highlighter,
+            EntitiesRenderer entitiesRenderer,
+            EntitiesIconRenderer iconRenderer,
+            IGameLoopEvents gameLoopEvents)
             : base(shortcutsManager, inputManager, cursorPickingManager, cursorManager, areaSelectionToolFactory, entitiesManager, highlighter, entitiesRenderer, false)
         {
             _toolbarController = toolbarController;
+            _entitiesManager = entitiesManager;
             _iconRenderer = iconRenderer;
+            
+            gameLoopEvents.RegisterRendererInitState(this, InitState);
+        }
+
+        private void InitState()
+        {
+            foreach (var entity in _entitiesManager.Entities)
+            {
+                if (entity is Storage storage)
+                {
+                  SetGodModeIconOnStorage(storage);
+                }
+                    
+            }
         }
 
         public override void RegisterUi(UiBuilder builder)
@@ -58,11 +81,19 @@ namespace CaptainOfCheats.Cheats.Tools
             foreach (var storage in immutableArray.Select(s => (Storage)s))
             {
                 storage.SetGodMode(!storage.IsGodModeEnabled());
+                SetGodModeIconOnStorage(storage);
+            }
+        }
 
-                if (storage.IsGodModeEnabled())
-                    _iconRenderer.AddIcon(new IconSpec(IconsPaths.ToolbarCaptainWheel, ColorRgba.Cyan), storage);
-                else
-                    _iconRenderer.RemoveIcon(new IconSpec(IconsPaths.ToolbarCaptainWheel, ColorRgba.Cyan), storage);
+        private void SetGodModeIconOnStorage(Storage storage)
+        {
+            if (storage.IsGodModeEnabled())
+            {
+                _iconRenderer.AddIcon(new IconSpec(IconsPaths.ToolbarCaptainWheel, ColorRgba.Cyan), storage);
+            }
+            else
+            {
+                _iconRenderer.RemoveIcon(new IconSpec(IconsPaths.ToolbarCaptainWheel, ColorRgba.Cyan), storage);
             }
         }
 

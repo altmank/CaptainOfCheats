@@ -100,7 +100,6 @@ namespace CaptainOfCheats.Cheats.Terrain
                 .AddOptions(_looseProductProtos.Select(x => x.Id.ToString().Replace("Product_", "")).ToList())
                 .OnValueChange(i => _selectedLooseProductProto = (ProductProto.ID)_looseProductProtos.ElementAt(i)?.Id);
 
-
             _selectedLooseProductProto = _looseProductProtos.ElementAt(0)?.Id;
 
             return productDropdown;
