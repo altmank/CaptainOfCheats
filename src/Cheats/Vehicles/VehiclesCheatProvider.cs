@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using CaptainOfCheats.Extensions;
+using CaptainOfCheats.Logging;
 using Mafi;
 using Mafi.Core;
 using Mafi.Core.PropertiesDb;
@@ -37,19 +41,32 @@ namespace CaptainOfCheats.Cheats.Vehicles
         public void SetTruckCapacityMultiplier(TruckCapacityMultiplier multiplier)
         {
             var trucksCapacityMultiplier = _propsDb.GetProperty(IdsCore.PropertyIds.TrucksCapacityMultiplier);
-            trucksCapacityMultiplier.RemoveModifier(_trucksCapacityMultiplier100);
-            trucksCapacityMultiplier.RemoveModifier(_trucksCapacityMultiplier200);
-            trucksCapacityMultiplier.RemoveModifier(_trucksCapacityMultiplier500);
+
+            Logger.Log.Info($"Removing any existing COC truck capacity modifiers");
+            var cocModifierOwnerNames = new List<string>() { _trucksCapacityMultiplier100.Owner, _trucksCapacityMultiplier200.Owner, _trucksCapacityMultiplier500.Owner };
+            var propertyModifiers = trucksCapacityMultiplier.GetModifiers();
+            foreach (var modifier in propertyModifiers)
+            {
+                if (cocModifierOwnerNames.Contains(modifier.Owner))
+                {
+                    Logger.Log.Info($"Found existing modifier {modifier.Owner} to remove");
+                    trucksCapacityMultiplier.RemoveModifier(modifier);
+                }
+            }
+
 
             switch (multiplier)
             {
                 case TruckCapacityMultiplier.OneHundred:
+                    Logger.Log.Info($"Adding modifier {_trucksCapacityMultiplier100.Owner}");
                     trucksCapacityMultiplier.AddModifier(_trucksCapacityMultiplier100);
                     break;
                 case TruckCapacityMultiplier.TwoHundred:
+                    Logger.Log.Info($"Adding modifier {_trucksCapacityMultiplier200.Owner}");
                     trucksCapacityMultiplier.AddModifier(_trucksCapacityMultiplier200);
                     break;
                 case TruckCapacityMultiplier.FiveHundred:
+                    Logger.Log.Info($"Adding modifier {_trucksCapacityMultiplier500.Owner}");
                     trucksCapacityMultiplier.AddModifier(_trucksCapacityMultiplier500);
                     break;
                 case TruckCapacityMultiplier.Reset:
