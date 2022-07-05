@@ -34,3 +34,6 @@ The game is in early access and is being patched often. Patches have and will li
 Disable automatic game updates and only update when a new mod version is released if you want to keep it working during these patches. 
 
 Additionally, no warranty is provided that this will not cause you issues in your game. You assume any and all risk by using this mod in your game.
+
+## Modders
+Please be cautious copying some of the patterns in use by this code, it in some cases purposefully bypasses access restrictions setup by the developers and is most certainly not a 'best practice' for other modders to copy. In some cases there may be other, less brittle approaches to implement similar functionality. I've made these decisions willingly and have increased maintenance burden or bugs as a result.
