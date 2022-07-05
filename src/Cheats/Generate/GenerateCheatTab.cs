@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using CaptainOfCheats.Extensions;
 using Mafi;
 using Mafi.Core.Syncers;
 using Mafi.Localization;
@@ -17,10 +19,10 @@ namespace CaptainOfCheats.Cheats.Generate
         private readonly ComputingCheatProvider _computingCheatProvider;
         private readonly ElectricityCheatProvider _electricityCheatProvider;
         private readonly UnityCheatProvider _unityCheatProvider;
-        private float _computingTFlopGen;
-        private float _kwGen;
-        private readonly int _sliderWidth = 585;
-        private float _unityGen;
+        private int _computingTFlopGen;
+        private int _unityGen;
+        private int _kwGen;
+        private const int SliderWidth = 585;
 
         public GenerateCheatTab(
             NewInstanceOf<ElectricityCheatProvider> electricityCheatProvider,
@@ -59,82 +61,94 @@ namespace CaptainOfCheats.Cheats.Generate
         private void BuildKwSlider(StackContainer topOf)
         {
             Builder
-                .AddSectionTitle(topOf, new LocStrFormatted("Perpetual KW Generation"), new LocStrFormatted("Drag slider to change perpetual KW amount generation"));
+                .AddSectionTitle(topOf, new LocStrFormatted("Perpetual KW Generation"), new LocStrFormatted("Use increment buttons to change perpetual KW amount generation"));
 
             var sliderLabel = Builder
                 .NewTxt("")
                 .SetTextStyle(Builder.Style.Global.TextControls)
                 .SetAlignment(TextAnchor.MiddleLeft);
-            var kwSlider = Builder
-                .NewSlider("kwSlider")
-                .SimpleSlider(Builder.Style.Panel.Slider)
-                .SetValuesRange(0, 100000)
-                .WholeNumbersOnly()
-                .OnValueChange(
-                    qty => { sliderLabel.SetText(qty.ToString()); },
-                    qty =>
-                    {
-                        sliderLabel.SetText(qty.ToString());
-                        _kwGen = qty;
-                        _electricityCheatProvider.SetFreeElectricity((int)qty);
-                    })
-                .SetValue(_kwGen)
-                .AppendTo(topOf, new Vector2(_sliderWidth, 28f), ContainerPosition.LeftOrTop);
-            sliderLabel.PutToRightOf(kwSlider, 90f, Offset.Right(-110f));
+            sliderLabel.SetText(_kwGen.ToString());
+            
+            Action<int> zeroMinSetter = i =>
+            {
+                _kwGen = Math.Max(_kwGen + i, 0);
+                _electricityCheatProvider.SetFreeElectricity(_kwGen);
+                sliderLabel.SetText(_kwGen.ToString());
+            };
+            var incrementsAndActions = new Dictionary<int, Action<int>>()
+            {
+                {1, zeroMinSetter },
+                {100, zeroMinSetter },
+                {1000, zeroMinSetter },
+                {100000, zeroMinSetter }
+            };
+            var newIncrementButtonGroup = Builder.NewIncrementButtonGroup(incrementsAndActions);
+            newIncrementButtonGroup.AppendTo(topOf, new Vector2(SliderWidth, 50f), ContainerPosition.LeftOrTop);
+            
+            sliderLabel.PutToRightOf(newIncrementButtonGroup, 90f, Offset.Right(-100f));
         }
 
         private void BuildTFlopSlider(StackContainer topOf)
         {
             Builder
-                .AddSectionTitle(topOf, new LocStrFormatted("Perpetual TFlop Generation"), new LocStrFormatted("Drag slider to change perpetual TFLOP amount generation"));
+                .AddSectionTitle(topOf, new LocStrFormatted("Perpetual TFlop Generation"), new LocStrFormatted("Use increment buttons to change perpetual TFLOP amount generation"));
 
             var sliderLabel = Builder
                 .NewTxt("")
                 .SetTextStyle(Builder.Style.Global.TextControls)
                 .SetAlignment(TextAnchor.MiddleLeft);
-            var tflopSlider = Builder
-                .NewSlider("tFlopSlider")
-                .SimpleSlider(Builder.Style.Panel.Slider)
-                .SetValuesRange(0, 1000)
-                .WholeNumbersOnly()
-                .OnValueChange(
-                    qty => { sliderLabel.SetText(qty.ToString()); },
-                    qty =>
-                    {
-                        sliderLabel.SetText(qty.ToString());
-                        _computingTFlopGen = qty;
-                        _computingCheatProvider.SetFreeCompute((int)qty);
-                    })
-                .SetValue(_computingTFlopGen)
-                .AppendTo(topOf, new Vector2(_sliderWidth, 28f), ContainerPosition.LeftOrTop);
-            sliderLabel.PutToRightOf(tflopSlider, 90f, Offset.Right(-110f));
+            sliderLabel.SetText(_computingTFlopGen.ToString());
+            
+            Action<int> zeroMinSetter = i =>
+            {
+                _computingTFlopGen = Math.Max(_computingTFlopGen + i, 0);
+                _computingCheatProvider.SetFreeCompute(_computingTFlopGen);
+                sliderLabel.SetText(_computingTFlopGen.ToString());
+            };
+            var incrementsAndActions = new Dictionary<int, Action<int>>()
+            {
+                {1, zeroMinSetter },
+                {25, zeroMinSetter },
+                {100, zeroMinSetter },
+                {1000, zeroMinSetter }
+            };
+            var newIncrementButtonGroup = Builder.NewIncrementButtonGroup(incrementsAndActions);
+            newIncrementButtonGroup.AppendTo(topOf, new Vector2(SliderWidth, 50f), ContainerPosition.LeftOrTop);
+            
+            
+            sliderLabel.PutToRightOf(newIncrementButtonGroup, 90f, Offset.Right(-100f));
         }
 
         private void BuildUnitySlider(StackContainer topOf)
         {
             Builder
-                .AddSectionTitle(topOf, new LocStrFormatted("Perpetual Unity Generation (per Month)"), new LocStrFormatted("Drag slider to change perpetual Unity amount generation"));
+                .AddSectionTitle(topOf, new LocStrFormatted("Perpetual Unity Generation (per Month)"), new LocStrFormatted("Use increment buttons to change perpetual Unity amount generation"));
 
             var sliderLabel = Builder
                 .NewTxt("")
                 .SetTextStyle(Builder.Style.Global.TextControls)
                 .SetAlignment(TextAnchor.MiddleLeft);
-            var unitySlider = Builder
-                .NewSlider("unitySlider")
-                .SimpleSlider(Builder.Style.Panel.Slider)
-                .SetValuesRange(0, 1000)
-                .WholeNumbersOnly()
-                .OnValueChange(
-                    qty => { sliderLabel.SetText(qty.ToString()); },
-                    qty =>
-                    {
-                        sliderLabel.SetText(qty.ToString());
-                        _unityGen = qty;
-                        _unityCheatProvider.SetFreeUPoints((int)qty);
-                    })
-                .SetValue(_unityGen)
-                .AppendTo(topOf, new Vector2(_sliderWidth, 28f), ContainerPosition.LeftOrTop);
-            sliderLabel.PutToRightOf(unitySlider, 90f, Offset.Right(-110f));
+
+            sliderLabel.SetText(_unityGen.ToString());
+            
+            Action<int> zeroMinSetter = i =>
+            {
+                _unityGen = Math.Max(_unityGen + i, 0);
+                _unityCheatProvider.SetFreeUPoints(_unityGen);
+                sliderLabel.SetText(_unityGen.ToString());
+            };
+            var incrementsAndActions = new Dictionary<int, Action<int>>()
+            {
+                {1, zeroMinSetter },
+                {5, zeroMinSetter },
+                {10, zeroMinSetter },
+                {25, zeroMinSetter },
+                {100, zeroMinSetter }
+            };
+            var newIncrementButtonGroup = Builder.NewIncrementButtonGroup(incrementsAndActions);
+            newIncrementButtonGroup.AppendTo(topOf, new Vector2(SliderWidth, 50f), ContainerPosition.LeftOrTop);
+            
+            sliderLabel.PutToRightOf(newIncrementButtonGroup, 90f, Offset.Right(-100f));
         }
     }
 }
