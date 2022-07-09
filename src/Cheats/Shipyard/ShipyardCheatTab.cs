@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CaptainOfCheats.Cheats.Products;
 using Mafi;
 using Mafi.Core.Products;
 using Mafi.Core.Prototypes;

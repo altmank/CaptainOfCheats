@@ -6,7 +6,7 @@ using Mafi.Core.Products;
 using Mafi.Core.Prototypes;
 using Mafi.Core.World;
 
-namespace CaptainOfCheats.Cheats.Products
+namespace CaptainOfCheats.Cheats.Shipyard
 {
     public class ShipyardCheatProvider
     {
