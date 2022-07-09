@@ -4,7 +4,7 @@ A modding tool for Captain of Industry. It has a cheat menu that can be accessed
 
 Cheats
 - Spawn any haulable product into your shipyard at specified quantities
-- Turn any storage building into an infinite provider or deleter of products using the storage god mode tool (in your tools menu)
+- Turn any storage building into an infinite provider or deleter of products using the storage god mode tool (in your tools menu). WARNING: Use of god mode creates products from nothing and breaks how the game internally tracks recycling. So you may find recycling does not produce the output you expect if your production chains use God Mode.
 - Get free power
 - Get free computing power
 - Instant mode adds instant build, research, upgrade, spawning of vehicles and more
