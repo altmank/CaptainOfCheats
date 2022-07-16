@@ -77,16 +77,11 @@ namespace CaptainOfCheats.Cheats.Shipyard
 
             var spawnProductBtn = BuildAddProductBtn();
             spawnProductBtn.AppendTo(thirdRowContainer, spawnProductBtn.GetOptimalSize(), ContainerPosition.LeftOrTop, Offset.Top(10f));
-
-            var removeButton = BuildRemoveProductBtn();
-            removeButton.AppendTo(thirdRowContainer, removeButton.GetOptimalSize(), ContainerPosition.LeftOrTop, Offset.Top(10f));
-
+            
             Panel horSep = this.Builder.NewPanel("separator").AppendTo<Panel>(tabContainer, new Vector2?(new Vector2(630f, 20f)), ContainerPosition.MiddleOrCenter, Offset.Top(20));
             this.Builder.NewIconContainer("left").SetIcon("Assets/Unity/UserInterface/General/HorizontalGradientToLeft48.png", false).PutToLeftMiddleOf<IconContainer>((IUiElement) horSep, new Vector2(300f, 1f));
             this.Builder.NewIconContainer("symbol").SetIcon("Assets/Unity/UserInterface/General/Tradable128.png").PutToCenterMiddleOf<IconContainer>((IUiElement) horSep, new Vector2(20f, 20f));
             this.Builder.NewIconContainer("right").SetIcon("Assets/Unity/UserInterface/General/HorizontalGradientToRight48.png", false).PutToRightMiddleOf<IconContainer>((IUiElement) horSep, new Vector2(300f, 1f));
-            
-            
             
             Builder.AddSectionTitle(tabContainer, new LocStrFormatted("Main Ship"));
             var mainShipPanel = Builder.NewPanel("mainShipPanel").SetBackground(Builder.Style.Panel.ItemOverlay);
@@ -154,18 +149,7 @@ namespace CaptainOfCheats.Cheats.Shipyard
 
             return btn;
         }
-
-        private Btn BuildRemoveProductBtn()
-        {
-            var btn = Builder.NewBtn("button")
-                .SetButtonStyle(Style.Global.DangerBtn)
-                .SetText(new LocStrFormatted("Remove Product"))
-                .AddToolTip("WARNING: This deletes products, gone forever, poof.")
-                .OnClick(() => _shipyardCheatProvider.RemoveItemFromShipYard(_selectedProduct.Value, (int)_quantity));
-
-            return btn;
-        }
-
+        
         private Btn BuildForceUnloadShipyardShipButton()
         {
             var btn = Builder.NewBtn("button")

@@ -26,12 +26,6 @@ namespace CaptainOfCheats.Cheats.Shipyard
             var productProto = _protosDb.First<ProductProto>(p => p.Id == product);
             _assetTransactionManager.AddProduct(new ProductQuantity(productProto.Value, new Quantity(quantity)), CreateReason.Cheated);
         }
-
-        public void RemoveItemFromShipYard(ProductProto.ID product, int quantity = 1000)
-        {
-            var productProto = _protosDb.First<ProductProto>(p => p.Id == product);
-            _assetTransactionManager.RemoveProduct(new ProductQuantity(productProto.Value, new Quantity(quantity)), DestroyReason.Cheated);
-        }
         
         public void ForceUnloadShipyardShip()
         {
