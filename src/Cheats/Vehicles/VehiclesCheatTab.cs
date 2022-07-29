@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using CaptainOfCheats.Cheats.General;
 using CaptainOfCheats.Extensions;
 using Mafi;
+using Mafi.Collections;
+using Mafi.Core;
 using Mafi.Core.Syncers;
 using Mafi.Localization;
 using Mafi.Unity;
@@ -10,6 +11,7 @@ using Mafi.Unity.InputControl;
 using Mafi.Unity.UiFramework;
 using Mafi.Unity.UiFramework.Components;
 using Mafi.Unity.UiFramework.Components.Tabs;
+using UnityEngine;
 
 namespace CaptainOfCheats.Cheats.Vehicles
 {
@@ -17,7 +19,7 @@ namespace CaptainOfCheats.Cheats.Vehicles
     public class VehiclesCheatTab : Tab, ICheatProviderTab
     {
         private readonly VehiclesCheatProvider _vehiclesCheatProvider;
-
+        private readonly Dict<SwitchBtn, Func<bool>> _switchBtns = new Dict<SwitchBtn, Func<bool>>();
 
         public VehiclesCheatTab(NewInstanceOf<VehiclesCheatProvider> vehiclesCheatProvider) : base(nameof(VehiclesCheatTab), SyncFrequency.OncePerSec)
         {
@@ -36,15 +38,45 @@ namespace CaptainOfCheats.Cheats.Vehicles
 
         public string IconPath => Assets.Unity.UserInterface.Toolbar.Vehicles_svg;
 
+        
+        public override void RenderUpdate(GameTime gameTime)
+        {
+            RefreshValues();
+            base.RenderUpdate(gameTime);
+        }
+
+        public override void SyncUpdate(GameTime gameTime)
+        {
+            RefreshValues();
+            base.SyncUpdate(gameTime);
+        }
+
+        private void RefreshValues()
+        {
+            foreach (var kvp in _switchBtns) kvp.Key.SetState(kvp.Value());
+        }
+        
         protected override void BuildUi()
         {
             var tabContainer = CreateStackContainer();
             
+            var firstRowContainer = Builder
+                .NewStackContainer("firstRowContainer")
+                .SetStackingDirection(StackContainer.Direction.LeftToRight)
+                .SetSizeMode(StackContainer.SizeMode.StaticDirectionAligned)
+                .SetItemSpacing(10f)
+                .AppendTo(tabContainer, offset: Offset.All(0), size: 30);
+            
+            var fuelToggle = NewToggleSwitch(
+                "Disable Fuel Consumption",
+                "Set fuel consumption to zero (right) or default (left).",
+                toggleVal => _vehiclesCheatProvider.SetVehicleFuelConsumptionToZero(toggleVal),
+                () => _vehiclesCheatProvider.IsVehicleFuelConsumptionZero());
+            fuelToggle.AppendTo(firstRowContainer, new Vector2(fuelToggle.GetWidth(), 25), ContainerPosition.LeftOrTop);
+            
             Builder.AddSectionTitle(tabContainer, new LocStrFormatted("Vehicle Cap Limit"), new LocStrFormatted("Adjust vehicle limit cap up or down using the increment buttons."));
             var vehicleCapIncrementButtonPanel = Builder.NewIncrementButtonGroup(VehicleCapIncrementButtonConfig);
             vehicleCapIncrementButtonPanel.AppendTo(tabContainer, new float?(50f), Offset.All(0));
-            
-            
             
             Builder.AddSectionTitle(tabContainer, new LocStrFormatted("Truck Capacity Multiplier"));
             var capacityMultiplierPanel = Builder.NewPanel("capacityMultiplierPanel").SetBackground(Builder.Style.Panel.ItemOverlay);
@@ -85,7 +117,6 @@ namespace CaptainOfCheats.Cheats.Vehicles
                 .OnClick(() => _vehiclesCheatProvider.SetTruckCapacityMultiplier(VehiclesCheatProvider.TruckCapacityMultiplier.Reset));
             resetCapacityBtn.AppendTo(capacityMultiplierBtnContainer, resetCapacityBtn.GetOptimalSize(), ContainerPosition.MiddleOrCenter);
             
-            
         }
         private StackContainer CreateStackContainer()
         {
@@ -97,6 +128,18 @@ namespace CaptainOfCheats.Cheats.Vehicles
                 .SetItemSpacing(5f)
                 .PutToTopOf(this, 0.0f);
             return topOf;
+        }
+        
+        private SwitchBtn NewToggleSwitch(string text, string tooltip, Action<bool> onToggleAction, Func<bool> isToggleEnabled)
+        {
+            var toggleBtn = Builder.NewSwitchBtn()
+                .SetText(text)
+                .AddTooltip(new LocStrFormatted(tooltip))
+                .SetOnToggleAction(onToggleAction);
+
+            _switchBtns.Add(toggleBtn, isToggleEnabled);
+
+            return toggleBtn;
         }
     }
 }

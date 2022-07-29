@@ -24,6 +24,7 @@ namespace CaptainOfCheats.Cheats.Vehicles
         private readonly PropDiffPercent _trucksCapacityMultiplier100 = PropertyModifiers.Diff("COC_TrucksCapacityMultiplier100", Percent.Hundred);
         private readonly PropDiffPercent _trucksCapacityMultiplier200 = PropertyModifiers.Diff("COC_TrucksCapacityMultiplier200", Percent.FromRaw(200000));
         private readonly PropDiffPercent _trucksCapacityMultiplier500 = PropertyModifiers.Diff("COC_TrucksCapacityMultiplier500", Percent.FromRaw(500000));
+        private readonly PropDiffPercent _vehiclesZeroFuelConsumptionMultiplier = PropertyModifiers.Diff("COC_VehiclesFuelConsumptionMultiplier", -100.Percent());
         private readonly IVehiclesManager _vehiclesManager;
 
         public VehiclesCheatProvider(IVehiclesManager vehiclesManager, IPropertiesDb propsDb)
@@ -37,6 +38,31 @@ namespace CaptainOfCheats.Cheats.Vehicles
             _vehiclesManager.IncreaseVehicleLimit(diff);
         }
 
+        public void SetVehicleFuelConsumptionToZero(bool enable)
+        {
+            var vehiclesFuelConsumptionMultiplier = _propsDb.GetProperty(IdsCore.PropertyIds.VehiclesFuelConsumptionMultiplier);
+            var propertyModifiers = vehiclesFuelConsumptionMultiplier.GetModifiers();
+            var zeroFuelModifier = propertyModifiers.FirstOrDefault(x => x.Owner == _vehiclesZeroFuelConsumptionMultiplier.Owner);
+
+            switch (enable)
+            {
+                case true when zeroFuelModifier == null:
+                    Logger.Log.Info($"Adding modifier {_vehiclesZeroFuelConsumptionMultiplier.Owner}");
+                    vehiclesFuelConsumptionMultiplier.AddModifier(_vehiclesZeroFuelConsumptionMultiplier);
+                    break;
+                case false when zeroFuelModifier != null:
+                    Logger.Log.Info($"Found existing modifier {zeroFuelModifier.Owner} to remove");
+                    vehiclesFuelConsumptionMultiplier.RemoveModifier(zeroFuelModifier);
+                    break;
+            }
+        }
+
+        public bool IsVehicleFuelConsumptionZero()
+        {
+            var vehiclesFuelConsumptionMultiplier = _propsDb.GetProperty(IdsCore.PropertyIds.VehiclesFuelConsumptionMultiplier);
+            var propertyModifiers = vehiclesFuelConsumptionMultiplier.GetModifiers();
+            return propertyModifiers.Any(x => x.Owner == _vehiclesZeroFuelConsumptionMultiplier.Owner);
+        }
 
         public void SetTruckCapacityMultiplier(TruckCapacityMultiplier multiplier)
         {
@@ -53,7 +79,6 @@ namespace CaptainOfCheats.Cheats.Vehicles
                     trucksCapacityMultiplier.RemoveModifier(modifier);
                 }
             }
-
 
             switch (multiplier)
             {
