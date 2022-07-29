@@ -11,6 +11,7 @@ Cheats
 - Unlock all research
 - Change vehicle cap
 - Increase vehicle capacity
+- Disable vehicle fuel consumption
 - Force unload ship
 - Change weather
 - Repair fleet and finish an in-progress fleet exploration command
