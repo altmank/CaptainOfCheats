@@ -140,9 +140,15 @@ namespace CaptainOfCheats.Cheats.Terrain
         public void ChangeMaterial(TerrainDesignation terrainDesignation, LooseProductProto newTerrainMaterial)
         {
             var looseProductQuantity = new LooseProductQuantity(newTerrainMaterial, Quantity.MaxValue);
+            
             var terrainThickness = looseProductQuantity.ToTerrainThickness();
 
-            terrainDesignation.ForEachTile((tile, f) => { DumpTile(tile, ref terrainThickness, ThicknessTilesF.MaxValue, terrainDesignation, true); });
+            terrainDesignation.ForEachTile((tile, f) =>
+            {
+                DumpTile(tile, ref terrainThickness, ThicknessTilesF.MaxValue, terrainDesignation, true);
+                
+            });
+            
         }
 
         public void SetHeightToMatchDesignation(TerrainDesignation terrainDesignation, bool doNoTerrainPhysics)
@@ -152,6 +158,7 @@ namespace CaptainOfCheats.Cheats.Terrain
 
         private HeightTilesF GetTargetHeight(TerrainDesignation terrainDesignation, Tile2i position)
         {
+            
             if (terrainDesignation.ContainsPosition(position)) return terrainDesignation.GetTargetHeightAt(position);
 
             var dumpingDesignationAt = _terrainDumpingManager.GetDumpingDesignationAt(position);

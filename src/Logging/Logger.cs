@@ -15,7 +15,7 @@ namespace CaptainOfCheats.Logging
 
             public static void Error(string message)
             {
-                Mafi.Log.Error($"{LogPrefix}{message}", true);
+                Mafi.Log.Error($"{LogPrefix}{message}");
             }
 
             public static void Exception(Exception e, string message)
