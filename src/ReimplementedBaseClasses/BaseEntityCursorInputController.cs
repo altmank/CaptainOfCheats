@@ -18,6 +18,7 @@ using Mafi.Unity.UiFramework.Styles;
 using Mafi.Unity.UserInterface;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Logger = CaptainOfCheats.Logging.Logger;
 
 namespace CaptainOfCheats.ReimplementedBaseClasses
 {
@@ -121,7 +122,7 @@ namespace CaptainOfCheats.ReimplementedBaseClasses
         {
             if (!IsActive)
             {
-                Log.Error("Input update for non-active controller!");
+                Logger.Log.Error("Input update for non-active controller!");
                 return false;
             }
 
