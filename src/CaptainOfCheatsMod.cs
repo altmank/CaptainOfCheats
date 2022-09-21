@@ -3,6 +3,8 @@ using System.Reflection;
 using CaptainOfCheats.Cheats;
 using CaptainOfCheats.Logging;
 using Mafi;
+using Mafi.Collections;
+using Mafi.Core.Game;
 using Mafi.Core.Mods;
 using Mafi.Core.Prototypes;
 
@@ -30,6 +32,9 @@ namespace CaptainOfCheats
             var patch = Convert.ToInt32(gitVersionInformationType.GetField("Patch").GetValue(null));
             return new Version(major, minor, patch);
         }
+
+        public void ChangeConfigs(Lyst<IConfig> configs)
+        { }
 
         public void RegisterPrototypes(ProtoRegistrator registrator)
         { }

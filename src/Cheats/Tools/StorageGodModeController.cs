@@ -3,7 +3,9 @@ using CaptainOfCheats.Constants;
 using CaptainOfCheats.Extensions;
 using CaptainOfCheats.ReimplementedBaseClasses;
 using Mafi;
+using Mafi.Collections;
 using Mafi.Collections.ImmutableCollections;
+using Mafi.Collections.ReadonlyCollections;
 using Mafi.Core.Buildings.Storages;
 using Mafi.Core.Entities;
 using Mafi.Core.Entities.Static;
@@ -17,6 +19,7 @@ using Mafi.Unity.Entities;
 using Mafi.Unity.InputControl;
 using Mafi.Unity.InputControl.AreaTool;
 using Mafi.Unity.InputControl.Cursors;
+using Mafi.Unity.InputControl.Factory;
 using Mafi.Unity.InputControl.Toolbar;
 using Mafi.Unity.UiFramework.Styles;
 using Mafi.Unity.UserInterface;
@@ -36,11 +39,10 @@ namespace CaptainOfCheats.Cheats.Tools
             CursorManager cursorManager,
             AreaSelectionToolFactory areaSelectionToolFactory,
             IEntitiesManager entitiesManager,
-            ObjectHighlighter highlighter,
-            EntitiesRenderer entitiesRenderer,
+            NewInstanceOf<EntityHighlighter> highlighter,
             EntitiesIconRenderer iconRenderer,
             IGameLoopEvents gameLoopEvents)
-            : base(shortcutsManager, inputManager, cursorPickingManager, cursorManager, areaSelectionToolFactory, entitiesManager, highlighter, entitiesRenderer, false)
+            : base(shortcutsManager, inputManager, cursorPickingManager, cursorManager, areaSelectionToolFactory, entitiesManager, highlighter, (Option<NewInstanceOf<TransportTrajectoryHighlighter>>) Option.None)
         {
             _toolbarController = toolbarController;
             _entitiesManager = entitiesManager;
@@ -72,13 +74,17 @@ namespace CaptainOfCheats.Cheats.Tools
                                                 "When a storage has god mod enabled, drag the green slider to the right to get infinite product from that storage. " +
                                                 "Drag the red slider to the left to destroy that product in the storage (or any coming in via transport)."));
         }
-        
 
-        protected override void OnEntitiesSelected(ImmutableArray<IStaticEntity> immutableArray, bool isAreaSelection, bool isLeftClick)
+        protected override bool OnFirstActivated(IStaticEntity hoveredEntity, Lyst<IStaticEntity> selectedEntities, Lyst<SubTransport> selectedPartialTransports)
         {
-            if (immutableArray.Length == 0) return;
+            return false;
+        }
 
-            foreach (var storage in immutableArray.Select(s => (Storage)s))
+        protected override void OnEntitiesSelected(IIndexable<IStaticEntity> selectedEntities, IIndexable<SubTransport> selectedPartialTransports, bool isAreaSelection, bool isLeftMouse)
+        {
+            if (selectedEntities.Count == 0) return;
+
+            foreach (var storage in selectedEntities.Select(s => (Storage)s))
             {
                 storage.SetGodMode(!storage.IsGodModeEnabled());
                 SetGodModeIconOnStorage(storage);
@@ -96,12 +102,7 @@ namespace CaptainOfCheats.Cheats.Tools
                 _iconRenderer.RemoveIcon(new IconSpec(IconsPaths.ToolbarCaptainWheel, ColorRgba.Cyan), storage);
             }
         }
-
-        protected override Option<InputCommand> ScheduleCommand(IStaticEntity entity, bool isAreaSelection, bool isLeftClick)
-        {
-            return Option<InputCommand>.None;
-        }
-
+        
         protected override bool Matches(IStaticEntity entity, bool isAreaSelection, bool isLeftClick)
         {
             if (entity.IsDestroyed)

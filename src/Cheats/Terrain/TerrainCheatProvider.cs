@@ -93,7 +93,7 @@ namespace CaptainOfCheats.Cheats.Terrain
 
             foreach (var designation in miningTerrainDesignations)
             {
-                if (designation.ManagedByTowers.Count > 0 && ignoreMineTowerDesignations)
+                if (!designation.ManagedByTowers.IsEmpty() && ignoreMineTowerDesignations)
                 {
                     continue;
                 }
@@ -111,7 +111,7 @@ namespace CaptainOfCheats.Cheats.Terrain
 
             foreach (var designation in dumpingDesignations)
             {
-                if (designation.ManagedByTowers.Count > 0 && ignoreMineTowerDesignations)
+                if (!designation.ManagedByTowers.IsEmpty() && ignoreMineTowerDesignations)
                 {
                     continue;
                 }
@@ -129,7 +129,7 @@ namespace CaptainOfCheats.Cheats.Terrain
 
             foreach (var designation in dumpingDesignations)
             {
-                if (designation.ManagedByTowers.Count > 0 && ignoreMineTowerDesignations)
+                if (!designation.ManagedByTowers.IsEmpty() && ignoreMineTowerDesignations)
                 {
                     continue;
                 }
