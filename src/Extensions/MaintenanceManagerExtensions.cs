@@ -8,7 +8,6 @@ namespace CaptainOfCheats.Extensions
 {
     public static class MaintenanceManagerExtensions
     {
-
         public static bool IsMaintenanceDisabled(this MaintenanceManager maintenanceManager)
         {
             var property = GetMaintenanceDisabledProperty();

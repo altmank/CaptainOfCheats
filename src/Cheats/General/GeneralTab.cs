@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using CaptainOfCheats.Config;
 using CaptainOfCheats.Extensions;
 using Mafi;
 using Mafi.Collections;
@@ -24,13 +23,15 @@ namespace CaptainOfCheats.Cheats.General
         private readonly PopulationCheatProvider _populationCheatProvider;
         private readonly MaintenanceCheatProvider _maintenanceCheatProvider;
         private readonly InstantBuildCheatProvider _instantBuildCheatProvider;
+        private readonly DiseaseCheatProvider _diseaseCheatProvider;
         private readonly Dict<SwitchBtn, Func<bool>> _switchBtns = new Dict<SwitchBtn, Func<bool>>();
 
         public GeneralTab(NewInstanceOf<InstantBuildCheatProvider> instantBuildCheatProvider,
             NewInstanceOf<MaintenanceCheatProvider> maintenanceCheatProvider,
             NewInstanceOf<PopulationCheatProvider> populationCheatProvider,
             NewInstanceOf<ResearchCheatProvider> researchCheatProvider,
-            NewInstanceOf<UnityCheatProvider> unityCheatProvider
+            NewInstanceOf<UnityCheatProvider> unityCheatProvider,
+            NewInstanceOf<DiseaseCheatProvider> diseaseCheatProvider
         ) : base(nameof(GeneralTab), SyncFrequency.OncePerSec)
         {
             _unityCheatProvider = unityCheatProvider.Instance;
@@ -38,6 +39,7 @@ namespace CaptainOfCheats.Cheats.General
             _populationCheatProvider = populationCheatProvider.Instance;
             _maintenanceCheatProvider = maintenanceCheatProvider.Instance;
             _instantBuildCheatProvider = instantBuildCheatProvider.Instance;
+            _diseaseCheatProvider = diseaseCheatProvider.Instance;
         }
 
         public string Name => "General";
@@ -99,7 +101,15 @@ namespace CaptainOfCheats.Cheats.General
                 toggleVal => _maintenanceCheatProvider.ToggleMaintenance(toggleVal),
                 () => _maintenanceCheatProvider.IsMaintenanceEnabled());
             maintenanceToggle.AppendTo(firstRowContainer, new Vector2(maintenanceToggle.GetWidth(), 25), ContainerPosition.LeftOrTop);
-            maintenanceToggle.PutToRightOf(instantModeToggle, maintenanceToggle.GetWidth(), Offset.Right(-200f));
+            maintenanceToggle.PutToRightOf(instantModeToggle, maintenanceToggle.GetWidth());
+            
+            var diseaseToggle = NewToggleSwitch(
+                "Disease",
+                "Set Disease off (left) or on (right). If off, every day if disease is detected it will be removed automatically. Toggle on/off is not persisted in your save game and resets every reload.",
+                toggleVal => _diseaseCheatProvider.ToggleDisease(toggleVal),
+                () => !_diseaseCheatProvider.IsDiseaseDisabled);
+            diseaseToggle.AppendTo(firstRowContainer, new Vector2(diseaseToggle.GetWidth(), 25), ContainerPosition.LeftOrTop);
+            diseaseToggle.PutToRightOf(instantModeToggle, diseaseToggle.GetWidth(), Offset.Right(-280));
 
             
             Builder.AddSectionTitle(tabContainer, new LocStrFormatted("Settlement Population"), new LocStrFormatted("Add or remove people from your population using the increment buttons."));
@@ -150,7 +160,7 @@ namespace CaptainOfCheats.Cheats.General
                 .AddToolTip("Add 25 Unity to your current supply, it will not exceed your max Unity cap.")
                 .OnClick(() => _unityCheatProvider.AddUnity(25));
             addUnityButton.AppendTo(fourthRowContainer, addUnityButton.GetOptimalSize(), ContainerPosition.MiddleOrCenter);
-
+            
             RefreshValues();
         }
 

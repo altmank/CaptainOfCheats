@@ -18,6 +18,7 @@ Cheats
 - Add/remove population
 - Add unity
 - Disable maintenance
+- Disable disease
 - Refill ground water/oil reserves
 - Terrain modification via mining/dumping designations
 - Tree removal
