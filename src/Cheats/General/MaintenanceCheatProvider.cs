@@ -1,10 +1,4 @@
-﻿using System;
-using System.Reflection;
-using CaptainOfCheats.Config;
-using CaptainOfCheats.Extensions;
-using CaptainOfCheats.Logging;
-using Mafi.Collections;
-using Mafi.Core;
+﻿using CaptainOfCheats.Extensions;
 using Mafi.Core.Maintenance;
 
 namespace CaptainOfCheats.Cheats.General
@@ -18,7 +12,7 @@ namespace CaptainOfCheats.Cheats.General
         {
             _maintenanceManager = maintenanceManager;
         }
-        
+
         public bool IsMaintenanceEnabled()
         {
             return !_maintenanceManager.IsMaintenanceDisabled();

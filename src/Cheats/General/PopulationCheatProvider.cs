@@ -14,18 +14,8 @@ namespace CaptainOfCheats.Cheats.General
 
         public void ChangePopulation(int diff)
         {
-            if (diff < 0)
-            {
-                _settlementsManager.RemovePopsAsMuchAs(Math.Abs(diff));
-            }
-
-            if (diff > 0)
-            {
-                _settlementsManager.AddPops(diff, PopsAdditionReason.Other);    
-            }
-            
+            if (diff < 0) _settlementsManager.RemovePopsAsMuchAs(Math.Abs(diff));
+            if (diff > 0) _settlementsManager.AddPops(diff, PopsAdditionReason.Other);
         }
-
- 
     }
 }

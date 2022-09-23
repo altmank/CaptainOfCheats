@@ -18,19 +18,19 @@
 		<Reference Include="System" />
 		<Reference Include="Mafi">
 			<HintPath>$(COI_ROOT)\Captain of Industry_Data\Managed\Mafi.dll</HintPath>
-			<Private>false</Private>
+			<Private>False</Private>
 		</Reference>
 		<Reference Include="Mafi.Core">
 			<HintPath>$(COI_ROOT)\Captain of Industry_Data\Managed\Mafi.Core.dll</HintPath>
-			<Private>false</Private>
+			<Private>False</Private>
 		</Reference>
 		<Reference Include="Mafi.Base">
 			<HintPath>$(COI_ROOT)\Captain of Industry_Data\Managed\Mafi.Base.dll</HintPath>
-			<Private>false</Private>
+			<Private>False</Private>
 		</Reference>
 		<Reference Include="Mafi.Unity">
 			<HintPath>$(COI_ROOT)\Captain of Industry_Data\Managed\Mafi.Unity.dll</HintPath>
-			<Private>false</Private>
+			<Private>False</Private>
 		</Reference>
 		<Reference Include="UnityEngine">
 			<HintPath>$(COI_ROOT)\Captain of Industry_Data\Managed\UnityEngine.dll</HintPath>
@@ -110,5 +110,6 @@
 	    <PrivateAssets>all</PrivateAssets>
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	  </PackageReference>
+	  <PackageReference Include="Lib.Harmony" Version="2.2.2" />
 	</ItemGroup>
 </Project>

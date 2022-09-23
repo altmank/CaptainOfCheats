@@ -1,6 +1,4 @@
-﻿using CaptainOfCheats.Config;
-using CaptainOfCheats.Logging;
-using Mafi.Collections;
+﻿using CaptainOfCheats.Logging;
 using Mafi.Core.Input;
 using Mafi.Core.MessageNotifications;
 using Mafi.Core.Prototypes;
@@ -22,9 +20,7 @@ namespace CaptainOfCheats.Cheats.General
             _unlockedProtosDb = unlockedProtosDb;
             _messageNotificationsManager = messageNotificationsManager;
         }
-
-
-
+        
         public void UnlockCurrentResearch()
         {
             _inputScheduler.ScheduleInputCmd(new ResearchCheatFinishCmd());

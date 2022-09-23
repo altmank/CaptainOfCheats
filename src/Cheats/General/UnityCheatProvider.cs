@@ -1,3 +1,4 @@
+using HarmonyLib;
 using Mafi;
 using Mafi.Core;
 using Mafi.Core.Population;
@@ -7,6 +8,7 @@ namespace CaptainOfCheats.Cheats.General
     public class UnityCheatProvider
     {
         private readonly UpointsManager _upointsManager;
+
         public UnityCheatProvider(UpointsManager upointsManager)
         {
             _upointsManager = upointsManager;

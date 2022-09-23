@@ -1,48 +1,75 @@
-using CaptainOfCheats.Extensions;
+using System;
 using CaptainOfCheats.Logging;
+using HarmonyLib;
 using Mafi;
-
 using Mafi.Core.Population;
-using Mafi.Core.Prototypes;
-using Mafi.Core.Simulation;
 
 namespace CaptainOfCheats.Cheats.General
 {
     public class DiseaseCheatProvider
     {
-        private readonly PopsHealthManager _popsHealthManager;
-        private readonly ProtosDb _protosDb;
         public bool IsDiseaseDisabled = false;
+        private readonly DisableDiseaseHarmonyPatcher _disableDiseaseHarmonyPatcher;
 
-        public DiseaseCheatProvider(PopsHealthManager popsHealthManager, ICalendar calendar, ProtosDb protosDb)
+        public DiseaseCheatProvider()
         {
-            _popsHealthManager = popsHealthManager;
-            _protosDb = protosDb;
-            calendar.NewDay.AddNonSaveable(this, OnNewDay);
+            _disableDiseaseHarmonyPatcher = new DisableDiseaseHarmonyPatcher();
         }
-        
-        private void OnNewDay()
+        public void ToggleDisease(bool diseaseIsEnabled)
         {
-            if (!IsDiseaseDisabled)
+            _disableDiseaseHarmonyPatcher.Toggle(!diseaseIsEnabled);
+            IsDiseaseDisabled = !diseaseIsEnabled;
+        }
+
+        private class DisableDiseaseHarmonyPatcher
+        {
+            public static bool Prefix_PopsHealthManager_startDisease(DiseaseProto disease)
             {
-                return;
+                Logger.Log.Info($"Preventing {disease.Id.Value} disease from starting");
+                return false;
             }
-            
-            if (_popsHealthManager.CurrentDisease == Option<DiseaseProto>.None) return;
-            
-            Logger.Log.Info($"Ending pop disease {_popsHealthManager.CurrentDisease.Value.Id.Value}");
-            _popsHealthManager.EndCurrentDisease();
-        }
 
-        public void ToggleDisease(bool toggleVal)
-        {
-            this.IsDiseaseDisabled = !toggleVal;
-        }
+            public static void Postfix_PopsHealthManager_updateDiseaseOnNewDay(PopsHealthManager __instance)
+            {
+                var popsHealthManager = __instance;
 
-        public void GenerateDisease()
-        {
-            var disease = _protosDb.First<DiseaseProto>(x => x.Id == new Proto.ID("Disease5")).Value;
-            _popsHealthManager.Call("startDisease", disease);
+                if (popsHealthManager.CurrentDisease.IsNone)
+                {
+                    return;
+                }
+
+                var diseaseName = popsHealthManager.CurrentDisease.Value.Id.Value;
+
+                Logger.Log.Info($"Found existing disease {diseaseName} that will be removed");
+                Traverse.Create(popsHealthManager).Property<Option<DiseaseProto>>("CurrentDisease").Value = Option<DiseaseProto>.None;
+                Traverse.Create(popsHealthManager).Field<int>("m_monthsSinceLastDisease").Value = 0;
+                Logger.Log.Info($"Disease {diseaseName} removed");
+            }
+
+            public void Toggle(bool isEnabled)
+            {
+                var harmony = new Harmony($"CaptainOfCheats.{nameof(DisableDiseaseHarmonyPatcher)}");
+                if (isEnabled)
+                {
+                    Logger.Log.Info($"Enabling cheat patches from {nameof(DisableDiseaseHarmonyPatcher)}");
+
+                    var popsHealthMgrType = typeof(PopsHealthManager);
+                    var patcherType = typeof(DisableDiseaseHarmonyPatcher);
+                    harmony.Patch(AccessTools.Method(popsHealthMgrType,
+                            "startDisease"),
+                        new HarmonyMethod(patcherType,
+                            nameof(Prefix_PopsHealthManager_startDisease)));
+                    harmony.Patch(AccessTools.Method(popsHealthMgrType,
+                            "updateDiseaseOnNewDay"),
+                        new HarmonyMethod(patcherType,
+                            nameof(Postfix_PopsHealthManager_updateDiseaseOnNewDay)));
+                }
+                else
+                {
+                    Logger.Log.Info($"Disabling cheat patches from {nameof(DisableDiseaseHarmonyPatcher)}");
+                    harmony.UnpatchAll(harmony.Id);
+                }
+            }
         }
     }
 }
