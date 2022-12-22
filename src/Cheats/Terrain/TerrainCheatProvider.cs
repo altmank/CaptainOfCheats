@@ -30,11 +30,6 @@ namespace CaptainOfCheats.Cheats.Terrain
             _virtualResourceManager = virtualResourceManager;
         }
 
-        public void AddTree()
-        {
-            
-        }
-
         public void RefillGroundWaterReserve()
         {
             var groundWater = _protosDb.First<VirtualResourceProductProto>(x => x.Id == IdsCore.Products.Groundwater);
