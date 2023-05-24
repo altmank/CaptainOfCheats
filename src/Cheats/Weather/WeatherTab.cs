@@ -9,6 +9,7 @@ using Mafi.Unity;
 using Mafi.Unity.UiFramework;
 using Mafi.Unity.UiFramework.Components;
 using Mafi.Unity.UiFramework.Components.Tabs;
+using Mafi.Unity.UserInterface.Components;
 using UnityEngine;
 
 namespace CaptainOfCheats.Cheats.Weather
@@ -60,7 +61,7 @@ namespace CaptainOfCheats.Cheats.Weather
 
         private void CreateCheatButton(ICheatCommandBase cheatItem, CheatButtonCommand cheatButtonCommand, StackContainer buttonGroupContainer)
         {
-            var btn = Builder.NewBtn("button")
+            var btn = Builder.NewBtnGeneral("button")
                 .SetButtonStyle(Style.Global.PrimaryBtn)
                 .SetText(new LocStrFormatted(cheatItem.Title))
                 .AddToolTip(cheatItem.Tooltip)

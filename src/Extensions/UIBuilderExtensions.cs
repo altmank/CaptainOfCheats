@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Mafi.Unity.UiFramework;
 using Mafi.Unity.UiFramework.Components;
 using Mafi.Unity.UserInterface;
+using Mafi.Unity.UserInterface.Components;
 
 namespace CaptainOfCheats.Extensions
 {
@@ -21,7 +22,7 @@ namespace CaptainOfCheats.Extensions
             //Create negative increment buttons
             foreach (var incrementsAndAction in incrementsAndActions)
             {
-                var newNegativeIncrementButton = builder.NewBtn("button")
+                var newNegativeIncrementButton = builder.NewBtnGeneral("button")
                     .SetButtonStyle(builder.Style.Global.DangerBtn)
                     .SetText($"-{incrementsAndAction.Key}")
                     .OnClick(() => incrementsAndAction.Value(-incrementsAndAction.Key));
@@ -31,7 +32,7 @@ namespace CaptainOfCheats.Extensions
             //Create Positive increment buttons
             foreach (var incrementsAndAction in incrementsAndActions)
             {
-                var newPositiveIncrementButton = builder.NewBtn("button")
+                var newPositiveIncrementButton = builder.NewBtnGeneral("button")
                     .SetButtonStyle(builder.Style.Global.PrimaryBtn)
                     .SetText($"+{incrementsAndAction.Key}")
                     .OnClick(() => incrementsAndAction.Value(incrementsAndAction.Key));

@@ -12,6 +12,7 @@ using Mafi.Unity.InputControl;
 using Mafi.Unity.UiFramework;
 using Mafi.Unity.UiFramework.Components;
 using Mafi.Unity.UiFramework.Components.Tabs;
+using Mafi.Unity.UserInterface.Components;
 using UnityEngine;
 using Assets = Mafi.Unity.Assets;
 
@@ -145,43 +146,44 @@ namespace CaptainOfCheats.Cheats.Terrain
 
         private Btn BuildMineButton()
         {
-            var btn = Builder.NewBtn("button")
+            var btn = Builder.NewBtnPrimary("button")
                 .SetButtonStyle(Style.Global.PrimaryBtn)
                 .SetText(new LocStrFormatted("Instant Mine"))
                 .AddToolTip(
                     "All areas currently designated for mining will have their mining operation completed immediately. Results in no resources for the player. WARNING: If terrain physics is turned on, be aware that large mining operations can take awhile to finish due to physics catching up.")
-                .OnClick(() => _cheatProvider.CompleteAllMiningDesignations(_disableTerrainPhysicsOnMiningAndDumping, _ignoreMineTowerDesignations));
+                ;//.OnClick(() => _cheatProvider.CompleteAllMiningDesignations(_disableTerrainPhysicsOnMiningAndDumping, _ignoreMineTowerDesignations));
 
             return btn;
         }
 
         private Btn BuildDumpButton()
         {
-            var btn = Builder.NewBtn("button")
+            var btn = Builder.NewBtnPrimary("button")
                 .SetButtonStyle(Style.Global.PrimaryBtn)
                 .SetText(new LocStrFormatted("Instant Dump"))
                 .AddToolTip(
                     "All areas currently designated for dumping will have their dump operation completed immediately. Requires no resources from the player. If terrain physics is turned on, the shape you create will be altered by terrain physics after the material spawns in.")
-                .OnClick(() => _cheatProvider.CompleteAllDumpingDesignations((ProductProto.ID)_selectedLooseProductProto, _disableTerrainPhysicsOnMiningAndDumping, _ignoreMineTowerDesignations));
+                ;//.OnClick(() => _cheatProvider.CompleteAllDumpingDesignations((ProductProto.ID)_selectedLooseProductProto, _disableTerrainPhysicsOnMiningAndDumping, _ignoreMineTowerDesignations));
 
             return btn;
         }
         
         private Btn BuildChangeTerrainButton()
         {
-            var btn = Builder.NewBtn("button")
-                .SetButtonStyle(Style.Global.PrimaryBtn)
-                .SetText(new LocStrFormatted("Change Terrain"))
-                .AddToolTip(
-                    "All areas currently designated for dumping will be used as markers for where to change the terrain selected in the terrain dropdown. The height of the terrain will not change, only the material. Useful for making dirt land for farms.")
-                .OnClick(() => _cheatProvider.ChangeTerrain((ProductProto.ID)_selectedLooseProductProto, _disableTerrainPhysicsOnMiningAndDumping, _ignoreMineTowerDesignations));
+            var btn = Builder.NewBtnPrimary("button")
+                    .SetButtonStyle(Style.Global.PrimaryBtn)
+                    .SetText(new LocStrFormatted("Change Terrain"))
+                    .AddToolTip(
+                        "All areas currently designated for dumping will be used as markers for where to change the terrain selected in the terrain dropdown. The height of the terrain will not change, only the material. Useful for making dirt land for farms.")
+                ;//.OnClick(() => _cheatProvider.ChangeTerrain((ProductProto.ID)_selectedLooseProductProto, _disableTerrainPhysicsOnMiningAndDumping, _ignoreMineTowerDesignations));
+                
 
             return btn;
         }
 
         private Btn BuildRemoveTreesButton()
         {
-            var btn = Builder.NewBtn("button")
+            var btn = Builder.NewBtnPrimary("button")
                 .SetButtonStyle(Style.Global.DangerBtn)
                 .SetText("Remove Trees")
                 .AddToolTip("Instantly remove all trees designated for removal by harvesters. Results in no resources for the player.")
@@ -192,7 +194,7 @@ namespace CaptainOfCheats.Cheats.Terrain
 
         private Btn BuildRefillGroundWaterButton()
         {
-            var btn = Builder.NewBtn("button")
+            var btn = Builder.NewBtnPrimary("button")
                 .SetButtonStyle(Style.Global.PrimaryBtn)
                 .SetText(new LocStrFormatted("Fill Ground Water"))
                 .AddToolTip("All ground reserves of water will be refilled to full capacity")
@@ -203,7 +205,7 @@ namespace CaptainOfCheats.Cheats.Terrain
 
         private Btn BuildRefillGroundCrudeButton()
         {
-            var btn = Builder.NewBtn("button")
+            var btn = Builder.NewBtnPrimary("button")
                 .SetButtonStyle(Style.Global.PrimaryBtn)
                 .SetText(new LocStrFormatted("Fill Ground Crude"))
                 .AddToolTip("All ground reserves of crude oil will be refilled to full capacity")
@@ -226,7 +228,7 @@ namespace CaptainOfCheats.Cheats.Terrain
 
         private void RefreshValues()
         {
-            foreach (var kvp in _switchBtns) kvp.Key.SetState(kvp.Value());
+            foreach (var kvp in _switchBtns) kvp.Key.SetIsOn(kvp.Value());
         }
     }
 }

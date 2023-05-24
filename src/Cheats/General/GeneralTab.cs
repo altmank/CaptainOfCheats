@@ -11,6 +11,7 @@ using Mafi.Unity.InputControl;
 using Mafi.Unity.UiFramework;
 using Mafi.Unity.UiFramework.Components;
 using Mafi.Unity.UiFramework.Components.Tabs;
+using Mafi.Unity.UserInterface.Components;
 using UnityEngine;
 
 namespace CaptainOfCheats.Cheats.General
@@ -68,7 +69,7 @@ namespace CaptainOfCheats.Cheats.General
 
         private void RefreshValues()
         {
-            foreach (var kvp in _switchBtns) kvp.Key.SetState(kvp.Value());
+            foreach (var kvp in _switchBtns) kvp.Key.SetIsOn(kvp.Value());
         }
 
         protected override void BuildUi()
@@ -128,15 +129,15 @@ namespace CaptainOfCheats.Cheats.General
                 .SetSizeMode(StackContainer.SizeMode.StaticDirectionAligned)
                 .SetItemSpacing(10f)
                 .PutToLeftOf(researchPanel, 0.0f, Offset.Left(10f));
-
-            var unlockCurrentResearchButton = Builder.NewBtn("button")
+            
+            var unlockCurrentResearchButton = Builder.NewBtnGeneral("button")
                 .SetButtonStyle(Style.Global.PrimaryBtn)
                 .SetText(new LocStrFormatted("Finish Current Research"))
                 .AddToolTip("Start research, and then use this command to instantly complete it. You can also use Instant Mode to complete started research immediately.")
                 .OnClick(_researchCheatProvider.UnlockCurrentResearch);
             unlockCurrentResearchButton.AppendTo(thirdRowContainer, unlockCurrentResearchButton.GetOptimalSize(), ContainerPosition.MiddleOrCenter);
 
-            var unlockAllResearchButton = Builder.NewBtn("button")
+            var unlockAllResearchButton = Builder.NewBtnGeneral("button")
                 .SetButtonStyle(Style.Global.PrimaryBtn)
                 .SetText(new LocStrFormatted("Unlock All Research"))
                 .AddToolTip("Unlocks all research including research that requires discoveries to research.")
@@ -154,7 +155,7 @@ namespace CaptainOfCheats.Cheats.General
                 .SetItemSpacing(10f)
                 .PutToLeftOf(otherPanel, 0.0f, Offset.Left(10f));
             
-            var addUnityButton = Builder.NewBtn("button")
+            var addUnityButton = Builder.NewBtnGeneral("button")
                 .SetButtonStyle(Style.Global.PrimaryBtn)
                 .SetText(new LocStrFormatted("Add 25 Unity"))
                 .AddToolTip("Add 25 Unity to your current supply, it will not exceed your max Unity cap.")

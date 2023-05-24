@@ -21,10 +21,11 @@ namespace CaptainOfCheats.Cheats.Vehicles
         }
 
         private readonly IPropertiesDb _propsDb;
-        private readonly PropDiffPercent _trucksCapacityMultiplier100 = PropertyModifiers.Diff("COC_TrucksCapacityMultiplier100", Percent.Hundred);
-        private readonly PropDiffPercent _trucksCapacityMultiplier200 = PropertyModifiers.Diff("COC_TrucksCapacityMultiplier200", Percent.FromRaw(200000));
-        private readonly PropDiffPercent _trucksCapacityMultiplier500 = PropertyModifiers.Diff("COC_TrucksCapacityMultiplier500", Percent.FromRaw(500000));
-        private readonly PropDiffPercent _vehiclesZeroFuelConsumptionMultiplier = PropertyModifiers.Diff("COC_VehiclesFuelConsumptionMultiplier", -100.Percent());
+        
+        private readonly PropertyModifier<Percent> _trucksCapacityMultiplier100 = PropertyModifiers.Delta(Percent.Hundred, "COC_TrucksCapacityMultiplier100", Option<string>.Create("TruckCapacity"));
+        private readonly PropertyModifier<Percent> _trucksCapacityMultiplier200 = PropertyModifiers.Delta(Percent.FromRaw(200000), "COC_TrucksCapacityMultiplier200", Option<string>.Create("TruckCapacity"));
+        private readonly PropertyModifier<Percent> _trucksCapacityMultiplier500 = PropertyModifiers.Delta(Percent.FromRaw(500000), "COC_TrucksCapacityMultiplier500", Option<string>.Create("TruckCapacity"));
+        private readonly PropertyModifier<Percent> _vehiclesZeroFuelConsumptionMultiplier = PropertyModifiers.Delta(-100.Percent(), "COC_VehiclesFuelConsumptionMultiplier", Option<string>.Create("TruckCapacity"));
         private readonly IVehiclesManager _vehiclesManager;
 
         public VehiclesCheatProvider(IVehiclesManager vehiclesManager, IPropertiesDb propsDb)
@@ -35,6 +36,7 @@ namespace CaptainOfCheats.Cheats.Vehicles
 
         public void ChangeVehicleLimit(int diff)
         {
+            
             _vehiclesManager.IncreaseVehicleLimit(diff);
         }
 
