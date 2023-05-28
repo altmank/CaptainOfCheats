@@ -65,8 +65,6 @@ namespace CaptainOfCheats.Cheats.Vehicles
                 return;
             }
             
-            
-            
             Logger.Log.Info($"Removing any existing COC truck capacity modifiers");
             var cocModifierOwnerNames = new List<string>() { _trucksCapacityMultiplier100.Owner, _trucksCapacityMultiplier200.Owner, _trucksCapacityMultiplier500.Owner };
             var propertyModifiers = trucksCapacityMultiplier.GetModifiers();

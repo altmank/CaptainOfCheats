@@ -91,14 +91,14 @@ namespace CaptainOfCheats.Cheats.General
 
             var instantModeToggle = NewToggleSwitch(
                 "Instant Mode",
-                "Set instant mode off (left) or on (right). Enables instant build, instant research, instant upgrades (shipyards, buildings, settlements, mines), instant vehicle construction, and instant repair when on.",
+                "Set instant mode ff (unchecked) or on (checked). Enables instant build, instant research, instant upgrades (shipyards, buildings, settlements, mines), instant vehicle construction, and instant repair when on.",
                 toggleVal => _instantBuildCheatProvider.ToggleInstantMode(toggleVal),
                 () => _instantBuildCheatProvider.IsInstantModeEnabled());
             instantModeToggle.AppendTo(firstRowContainer, new Vector2(instantModeToggle.GetWidth(), 25), ContainerPosition.LeftOrTop);
 
             var maintenanceToggle = NewToggleSwitch(
                 "Maintenance",
-                "Set Maintenance off (left) or on (right). If on, then your settlement will consume maintenance resources. If off, all consumption of maintenance will stop.",
+                "Set Maintenance ff (unchecked) or on (checked). If on, then your settlement will consume maintenance resources. If off, all consumption of maintenance will stop.",
                 toggleVal => _maintenanceCheatProvider.ToggleMaintenance(toggleVal),
                 () => _maintenanceCheatProvider.IsMaintenanceEnabled());
             maintenanceToggle.AppendTo(firstRowContainer, new Vector2(maintenanceToggle.GetWidth(), 25), ContainerPosition.LeftOrTop);
@@ -106,11 +106,11 @@ namespace CaptainOfCheats.Cheats.General
             
             var diseaseToggle = NewToggleSwitch(
                 "Disease",
-                "Set Disease off (left) or on (right). If off, every day if disease is detected it will be removed automatically. Toggle on/off is not persisted in your save game and resets every reload.",
+                "Set Disease off (unchecked) or on (checked). If off, every day if disease is detected it will be removed automatically. Toggle on/off is not persisted in your save game and resets every reload.",
                 toggleVal => _diseaseCheatProvider.ToggleDisease(toggleVal),
                 () => !_diseaseCheatProvider.IsDiseaseDisabled);
             diseaseToggle.AppendTo(firstRowContainer, new Vector2(diseaseToggle.GetWidth(), 25), ContainerPosition.LeftOrTop);
-            diseaseToggle.PutToRightOf(instantModeToggle, diseaseToggle.GetWidth(), Offset.Right(-280));
+            diseaseToggle.PutToRightOf(instantModeToggle, diseaseToggle.GetWidth(), Offset.Right(-225));
 
             
             Builder.AddSectionTitle(tabContainer, new LocStrFormatted("Settlement Population"), new LocStrFormatted("Add or remove people from your population using the increment buttons."));

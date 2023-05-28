@@ -18,9 +18,11 @@ namespace CaptainOfCheats.Cheats.Terrain
         private readonly ITerrainMiningManager _terrainMiningManager;
         private readonly ITreesManager _treeManager;
         private readonly VirtualResourceManager _virtualResourceManager;
+        private readonly TerrainManager _terrainManager;
 
-        public TerrainCheatProvider(ITerrainDesignationsManager terrainDesignationsManager, ProtosDb protosDb, 
-            ITerrainDumpingManager terrainDumpingManager, ITerrainMiningManager terrainMiningManager, ITreesManager treeManager, VirtualResourceManager virtualResourceManager)
+        public TerrainCheatProvider(ITerrainDesignationsManager terrainDesignationsManager, ProtosDb protosDb,
+            ITerrainDumpingManager terrainDumpingManager, ITerrainMiningManager terrainMiningManager, ITreesManager treeManager, VirtualResourceManager virtualResourceManager,
+            TerrainManager terrainManager)
         {
             _terrainDesignationsManager = terrainDesignationsManager;
             _protosDb = protosDb;
@@ -28,6 +30,7 @@ namespace CaptainOfCheats.Cheats.Terrain
             _terrainMiningManager = terrainMiningManager;
             _treeManager = treeManager;
             _virtualResourceManager = virtualResourceManager;
+            _terrainManager = terrainManager;
         }
 
         public void RefillGroundWaterReserve()
@@ -39,10 +42,9 @@ namespace CaptainOfCheats.Cheats.Terrain
             foreach (var groundWaterResource in allGroundWaterResources)
             {
                 groundWaterResource.AddAsMuchAs(groundWaterResource.Capacity);
-                
             }
         }
-        
+
         public void RefillGroundCrudeReserve()
         {
             var groundCrude = _protosDb.First<VirtualResourceProductProto>(x => x.Id == IdsCore.Products.VirtualCrudeOil);
@@ -81,7 +83,7 @@ namespace CaptainOfCheats.Cheats.Terrain
             }
         }
 
-        /*public void CompleteAllMiningDesignations(bool doNoTerrainPhysics = false, bool ignoreMineTowerDesignations = true)
+        public void CompleteAllMiningDesignations(bool ignoreMineTowerDesignations = true)
         {
             var miningTerrainDesignations = _terrainMiningManager.MiningDesignations
                 .Where(x => x.IsNotFulfilled);
@@ -92,12 +94,13 @@ namespace CaptainOfCheats.Cheats.Terrain
                 {
                     continue;
                 }
-                HarvestTreesInTerrainDesignation(designation);
-                SetHeightToMatchDesignation(designation, doNoTerrainPhysics);
-            }
-        }*/
 
-        /*public void CompleteAllDumpingDesignations(ProductProto.ID looseMaterialProductId, bool doNoTerrainPhysics = false, bool ignoreMineTowerDesignations = true)
+                HarvestTreesInTerrainDesignation(designation);
+                SetHeightToMatchDesignation(designation);
+            }
+        }
+
+        public void CompleteAllDumpingDesignations(ProductProto.ID looseMaterialProductId, bool ignoreMineTowerDesignations = true)
         {
             var looseProductProto = _protosDb.First<LooseProductProto>(x => x.Id == looseMaterialProductId);
 
@@ -110,13 +113,14 @@ namespace CaptainOfCheats.Cheats.Terrain
                 {
                     continue;
                 }
+
                 HarvestTreesInTerrainDesignation(designation);
                 ChangeMaterial(designation, looseProductProto.Value);
-                SetHeightToMatchDesignation(designation, doNoTerrainPhysics);
+                SetHeightToMatchDesignation(designation);
             }
-        }*/
-        
-        /*public void ChangeTerrain(ProductProto.ID looseMaterialProductId, bool doNoTerrainPhysics = false, bool ignoreMineTowerDesignations = true)
+        }
+
+        public void ChangeTerrain(ProductProto.ID looseMaterialProductId, bool ignoreMineTowerDesignations = true)
         {
             var looseProductProto = _protosDb.First<LooseProductProto>(x => x.Id == looseMaterialProductId);
 
@@ -128,50 +132,49 @@ namespace CaptainOfCheats.Cheats.Terrain
                 {
                     continue;
                 }
+
                 ChangeMaterial(designation, looseProductProto.Value);
             }
-        }*/
+        }
 
-        /*public void ChangeMaterial(TerrainDesignation terrainDesignation, LooseProductProto newTerrainMaterial)
+        public void ChangeMaterial(TerrainDesignation terrainDesignation, LooseProductProto newTerrainMaterial)
         {
             var looseProductQuantity = new LooseProductQuantity(newTerrainMaterial, Quantity.MaxValue);
-            
+
             var terrainThickness = looseProductQuantity.ToTerrainThickness();
 
-            terrainDesignation.ForEachTile((tile, f) =>
-            {
-                DumpTile(tile, ref terrainThickness, ThicknessTilesF.MaxValue, terrainDesignation, true);
-                
-            });
-            
-        }*/
+            terrainDesignation.ForEachTile((tile, f) => { DumpTile(tile, ref terrainThickness, terrainDesignation, true); });
+        }
 
-        /*public void SetHeightToMatchDesignation(TerrainDesignation terrainDesignation, bool doNoTerrainPhysics)
+        public void SetHeightToMatchDesignation(TerrainDesignation terrainDesignation)
         {
-            terrainDesignation.ForEachTile((tile, f) => { tile.SetHeight(GetTargetHeight(terrainDesignation, tile.TileCoord), doNoTerrainPhysics: doNoTerrainPhysics); });
-        }*/
+            terrainDesignation.ForEachTile((tile, f) => { tile.SetHeight(GetTargetHeight(terrainDesignation, tile.TileCoord)); });
+        }
 
         private HeightTilesF GetTargetHeight(TerrainDesignation terrainDesignation, Tile2i position)
         {
-            
             if (terrainDesignation.ContainsPosition(position)) return terrainDesignation.GetTargetHeightAt(position);
 
             var dumpingDesignationAt = _terrainDumpingManager.GetDumpingDesignationAt(position);
             return dumpingDesignationAt.HasValue ? dumpingDesignationAt.Value.GetTargetHeightAt(position) : HeightTilesF.MinValue;
         }
 
-        /*private void DumpTile(TerrainTile tile, ref TerrainMaterialThickness product, ThicknessTilesF maxDumped, TerrainDesignation terrainDesignation, bool doNotChangeHeight = false,
-            bool doNotRaiseEvents = false,
-            bool doNotDisruptTerrain = false)
+        private void DumpTile(TerrainTile tile, ref TerrainMaterialThickness product, TerrainDesignation terrainDesignation, bool doNotChangeHeight = false)
         {
             var targetHeight = GetTargetHeight(terrainDesignation, tile.TileCoord);
             if (tile.Height >= targetHeight) return;
 
-            var thicknessTilesF = targetHeight - tile.Height;
-            thicknessTilesF = thicknessTilesF.Min(maxDumped);
-            var thickness = thicknessTilesF.Min(product.Thickness);
-            tile.DepositMaterialOnTop(product.Material, thickness, doNotRaiseEvents: doNotRaiseEvents, doNotDisruptTerrain: doNotDisruptTerrain, doNotChangeHeight: doNotChangeHeight);
-            product = new TerrainMaterialThickness(product.Material, product.Thickness - thickness);
-        }*/
+            var tileCoordAndIndex = tile.CoordAndIndex;
+
+            if (doNotChangeHeight)
+            {
+                _terrainManager.DumpMaterial_NoHeightChange(tileCoordAndIndex, product.AsSlim);
+            }
+            else
+            {
+                _terrainManager.DumpMaterialUpToHeight(tileCoordAndIndex, product.AsSlim, targetHeight);
+            }
+
+        }
     }
 }

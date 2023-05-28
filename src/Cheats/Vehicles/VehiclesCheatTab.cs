@@ -70,7 +70,7 @@ namespace CaptainOfCheats.Cheats.Vehicles
             
             var fuelToggle = NewToggleSwitch(
                 "Disable Fuel Consumption",
-                "Set fuel consumption to zero (right) or default (left).",
+                "Set fuel consumption to zero (checked) or default (unchecked).",
                 toggleVal => _vehiclesCheatProvider.SetVehicleFuelConsumptionToZero(toggleVal),
                 () => _vehiclesCheatProvider.IsVehicleFuelConsumptionZero());
             fuelToggle.AppendTo(firstRowContainer, new Vector2(fuelToggle.GetWidth(), 25), ContainerPosition.LeftOrTop);
