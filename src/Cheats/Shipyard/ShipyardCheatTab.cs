@@ -11,6 +11,7 @@ using Mafi.Unity.InputControl;
 using Mafi.Unity.UiFramework;
 using Mafi.Unity.UiFramework.Components;
 using Mafi.Unity.UiFramework.Components.Tabs;
+using Mafi.Unity.UserInterface.Components;
 using UnityEngine;
 
 namespace CaptainOfCheats.Cheats.Shipyard
@@ -118,7 +119,7 @@ namespace CaptainOfCheats.Cheats.Shipyard
 
         private Btn BuildAddProductBtn()
         {
-            var btn = Builder.NewBtn("button")
+            var btn = Builder.NewBtnGeneral("button")
                 .SetButtonStyle(Style.Global.PrimaryBtn)
                 .SetText(new LocStrFormatted("Add Product"))
                 .AddToolTip("Add the product at the quantity selected into your Shipyard storage.")
@@ -130,7 +131,7 @@ namespace CaptainOfCheats.Cheats.Shipyard
 
         private Btn BuildFinishExplorationButton()
         {
-            var btn = Builder.NewBtn("button")
+            var btn = Builder.NewBtnGeneral("button")
                 .SetButtonStyle(Style.Global.PrimaryBtn)
                 .SetText(new LocStrFormatted("Finish Exploration"))
                 .AddToolTip("Set your ship to do an action and then press this button and they will complete it immediately.")
@@ -141,7 +142,7 @@ namespace CaptainOfCheats.Cheats.Shipyard
 
         private Btn BuildRepairFleetButton()
         {
-            var btn = Builder.NewBtn("button")
+            var btn = Builder.NewBtnGeneral("button")
                 .SetButtonStyle(Style.Global.PrimaryBtn)
                 .SetText(new LocStrFormatted("Repair Ship"))
                 .AddToolTip("Repair your main ship to full health.")
@@ -152,7 +153,7 @@ namespace CaptainOfCheats.Cheats.Shipyard
         
         private Btn BuildForceUnloadShipyardShipButton()
         {
-            var btn = Builder.NewBtn("button")
+            var btn = Builder.NewBtnGeneral("button")
                 .SetButtonStyle(Style.Global.PrimaryBtn)
                 .SetText("Force Unload Ship")
                 .AddToolTip("Bypass shipyard cargo capacity check and forcefully unload your ship into your shipyard cargo.")

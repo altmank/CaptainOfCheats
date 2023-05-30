@@ -11,6 +11,7 @@ using Mafi.Unity.InputControl;
 using Mafi.Unity.UiFramework;
 using Mafi.Unity.UiFramework.Components;
 using Mafi.Unity.UiFramework.Components.Tabs;
+using Mafi.Unity.UserInterface.Components;
 using UnityEngine;
 
 namespace CaptainOfCheats.Cheats.General
@@ -68,7 +69,7 @@ namespace CaptainOfCheats.Cheats.General
 
         private void RefreshValues()
         {
-            foreach (var kvp in _switchBtns) kvp.Key.SetState(kvp.Value());
+            foreach (var kvp in _switchBtns) kvp.Key.SetIsOn(kvp.Value());
         }
 
         protected override void BuildUi()
@@ -90,14 +91,14 @@ namespace CaptainOfCheats.Cheats.General
 
             var instantModeToggle = NewToggleSwitch(
                 "Instant Mode",
-                "Set instant mode off (left) or on (right). Enables instant build, instant research, instant upgrades (shipyards, buildings, settlements, mines), instant vehicle construction, and instant repair when on.",
+                "Set instant mode ff (unchecked) or on (checked). Enables instant build, instant research, instant upgrades (shipyards, buildings, settlements, mines), instant vehicle construction, and instant repair when on.",
                 toggleVal => _instantBuildCheatProvider.ToggleInstantMode(toggleVal),
                 () => _instantBuildCheatProvider.IsInstantModeEnabled());
             instantModeToggle.AppendTo(firstRowContainer, new Vector2(instantModeToggle.GetWidth(), 25), ContainerPosition.LeftOrTop);
 
             var maintenanceToggle = NewToggleSwitch(
                 "Maintenance",
-                "Set Maintenance off (left) or on (right). If on, then your settlement will consume maintenance resources. If off, all consumption of maintenance will stop.",
+                "Set Maintenance ff (unchecked) or on (checked). If on, then your settlement will consume maintenance resources. If off, all consumption of maintenance will stop.",
                 toggleVal => _maintenanceCheatProvider.ToggleMaintenance(toggleVal),
                 () => _maintenanceCheatProvider.IsMaintenanceEnabled());
             maintenanceToggle.AppendTo(firstRowContainer, new Vector2(maintenanceToggle.GetWidth(), 25), ContainerPosition.LeftOrTop);
@@ -105,11 +106,11 @@ namespace CaptainOfCheats.Cheats.General
             
             var diseaseToggle = NewToggleSwitch(
                 "Disease",
-                "Set Disease off (left) or on (right). If off, every day if disease is detected it will be removed automatically. Toggle on/off is not persisted in your save game and resets every reload.",
+                "Set Disease off (unchecked) or on (checked). If off, every day if disease is detected it will be removed automatically. Toggle on/off is not persisted in your save game and resets every reload.",
                 toggleVal => _diseaseCheatProvider.ToggleDisease(toggleVal),
                 () => !_diseaseCheatProvider.IsDiseaseDisabled);
             diseaseToggle.AppendTo(firstRowContainer, new Vector2(diseaseToggle.GetWidth(), 25), ContainerPosition.LeftOrTop);
-            diseaseToggle.PutToRightOf(instantModeToggle, diseaseToggle.GetWidth(), Offset.Right(-280));
+            diseaseToggle.PutToRightOf(instantModeToggle, diseaseToggle.GetWidth(), Offset.Right(-225));
 
             
             Builder.AddSectionTitle(tabContainer, new LocStrFormatted("Settlement Population"), new LocStrFormatted("Add or remove people from your population using the increment buttons."));
@@ -128,15 +129,15 @@ namespace CaptainOfCheats.Cheats.General
                 .SetSizeMode(StackContainer.SizeMode.StaticDirectionAligned)
                 .SetItemSpacing(10f)
                 .PutToLeftOf(researchPanel, 0.0f, Offset.Left(10f));
-
-            var unlockCurrentResearchButton = Builder.NewBtn("button")
+            
+            var unlockCurrentResearchButton = Builder.NewBtnGeneral("button")
                 .SetButtonStyle(Style.Global.PrimaryBtn)
                 .SetText(new LocStrFormatted("Finish Current Research"))
                 .AddToolTip("Start research, and then use this command to instantly complete it. You can also use Instant Mode to complete started research immediately.")
                 .OnClick(_researchCheatProvider.UnlockCurrentResearch);
             unlockCurrentResearchButton.AppendTo(thirdRowContainer, unlockCurrentResearchButton.GetOptimalSize(), ContainerPosition.MiddleOrCenter);
 
-            var unlockAllResearchButton = Builder.NewBtn("button")
+            var unlockAllResearchButton = Builder.NewBtnGeneral("button")
                 .SetButtonStyle(Style.Global.PrimaryBtn)
                 .SetText(new LocStrFormatted("Unlock All Research"))
                 .AddToolTip("Unlocks all research including research that requires discoveries to research.")
@@ -154,7 +155,7 @@ namespace CaptainOfCheats.Cheats.General
                 .SetItemSpacing(10f)
                 .PutToLeftOf(otherPanel, 0.0f, Offset.Left(10f));
             
-            var addUnityButton = Builder.NewBtn("button")
+            var addUnityButton = Builder.NewBtnGeneral("button")
                 .SetButtonStyle(Style.Global.PrimaryBtn)
                 .SetText(new LocStrFormatted("Add 25 Unity"))
                 .AddToolTip("Add 25 Unity to your current supply, it will not exceed your max Unity cap.")

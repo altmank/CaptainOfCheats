@@ -126,7 +126,7 @@ namespace CaptainOfCheats.ReimplementedBaseClasses
     protected void SetUpRightClickAreaSelection(ColorRgba color)
     {
       this.m_rightClickAreaColor = new ColorRgba?(color);
-      this.m_areaSelectionTool.SetRighClickColor(color);
+      this.m_areaSelectionTool.SetRightClickColor(color);
     }
 
     protected abstract bool Matches(T entity, bool isAreaSelection, bool isLeftClick);

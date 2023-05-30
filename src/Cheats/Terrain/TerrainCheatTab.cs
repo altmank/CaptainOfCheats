@@ -12,6 +12,7 @@ using Mafi.Unity.InputControl;
 using Mafi.Unity.UiFramework;
 using Mafi.Unity.UiFramework.Components;
 using Mafi.Unity.UiFramework.Components.Tabs;
+using Mafi.Unity.UserInterface.Components;
 using UnityEngine;
 using Assets = Mafi.Unity.Assets;
 
@@ -22,7 +23,6 @@ namespace CaptainOfCheats.Cheats.Terrain
     {
         private readonly ProtosDb _protosDb;
         private readonly TerrainCheatProvider _cheatProvider;
-        private bool _disableTerrainPhysicsOnMiningAndDumping = true;
         private readonly Dict<SwitchBtn, Func<bool>> _switchBtns = new Dict<SwitchBtn, Func<bool>>();
         private readonly IOrderedEnumerable<LooseProductProto> _looseProductProtos;
         private ProductProto.ID? _selectedLooseProductProto;
@@ -47,10 +47,8 @@ namespace CaptainOfCheats.Cheats.Terrain
             Builder.AddSectionTitle(tabContainer, new LocStrFormatted("Terrain"), new LocStrFormatted("Select the terrain to use when dumping."));
             var terrainSelector = BuildTerrainSelector(tabContainer);
             terrainSelector.AppendTo(tabContainer, new Vector2(150, 28f), ContainerPosition.LeftOrTop);
-            var terrainPhysicsToggleSwitch = CreateTerrainPhysicsToggleSwitch();
-            terrainPhysicsToggleSwitch.PutToRightOf(terrainSelector, terrainPhysicsToggleSwitch.GetWidth(), Offset.Right(-200f));
             var towerDesignationsToggleSwitch = CreateTerrainIgnoreMineTowerDesignationsToggleSwitch();
-            towerDesignationsToggleSwitch.PutToRightOf(terrainPhysicsToggleSwitch, towerDesignationsToggleSwitch.GetWidth(), Offset.Right(-250f));
+            towerDesignationsToggleSwitch.PutToRightOf(terrainSelector, towerDesignationsToggleSwitch.GetWidth(), Offset.Right(-250f));
 
             var instantTerrainActions = Builder.NewPanel("instantTerrainActions").SetBackground(Builder.Style.Panel.ItemOverlay);
             instantTerrainActions.AppendTo(tabContainer, size: 50f, Offset.All(0));
@@ -104,21 +102,7 @@ namespace CaptainOfCheats.Cheats.Terrain
 
             return productDropdown;
         }
-
-        private SwitchBtn CreateTerrainPhysicsToggleSwitch()
-        {
-            var toggleBtn = Builder.NewSwitchBtn()
-                .SetText("Disable Terrain Physics")
-                .AddTooltip(
-                    "When instantly completing mining or dumping designations, this toggle will indicate whether or not the game physics engine will affect the modified terrain. When turned on, expect very sharp edges on any terrain modifications you make. Note: Vehicles mining/dumping near no-physics terrain may cause no-physics terrain to start responding to physics.")
-                .SetOnToggleAction((toggleVal) => _disableTerrainPhysicsOnMiningAndDumping = toggleVal);
-
-
-            _switchBtns.Add(toggleBtn, () => _disableTerrainPhysicsOnMiningAndDumping);
-
-            return toggleBtn;
-        }
-
+        
         private SwitchBtn CreateTerrainIgnoreMineTowerDesignationsToggleSwitch()
         {
             var toggleBtn = Builder.NewSwitchBtn()
@@ -145,43 +129,44 @@ namespace CaptainOfCheats.Cheats.Terrain
 
         private Btn BuildMineButton()
         {
-            var btn = Builder.NewBtn("button")
+            var btn = Builder.NewBtnPrimary("button")
                 .SetButtonStyle(Style.Global.PrimaryBtn)
                 .SetText(new LocStrFormatted("Instant Mine"))
                 .AddToolTip(
-                    "All areas currently designated for mining will have their mining operation completed immediately. Results in no resources for the player. WARNING: If terrain physics is turned on, be aware that large mining operations can take awhile to finish due to physics catching up.")
-                .OnClick(() => _cheatProvider.CompleteAllMiningDesignations(_disableTerrainPhysicsOnMiningAndDumping, _ignoreMineTowerDesignations));
+                    "All areas currently designated for mining will have their mining operation completed immediately. Results in no resources for the player.")
+                .OnClick(() => _cheatProvider.CompleteAllMiningDesignations(_ignoreMineTowerDesignations));
 
             return btn;
         }
 
         private Btn BuildDumpButton()
         {
-            var btn = Builder.NewBtn("button")
+            var btn = Builder.NewBtnPrimary("button")
                 .SetButtonStyle(Style.Global.PrimaryBtn)
                 .SetText(new LocStrFormatted("Instant Dump"))
                 .AddToolTip(
-                    "All areas currently designated for dumping will have their dump operation completed immediately. Requires no resources from the player. If terrain physics is turned on, the shape you create will be altered by terrain physics after the material spawns in.")
-                .OnClick(() => _cheatProvider.CompleteAllDumpingDesignations((ProductProto.ID)_selectedLooseProductProto, _disableTerrainPhysicsOnMiningAndDumping, _ignoreMineTowerDesignations));
+                    "All areas currently designated for dumping will have their dump operation completed immediately. Requires no resources from the player.")
+                .OnClick(() => _cheatProvider.CompleteAllDumpingDesignations((ProductProto.ID)_selectedLooseProductProto, _ignoreMineTowerDesignations));
 
             return btn;
         }
         
         private Btn BuildChangeTerrainButton()
         {
-            var btn = Builder.NewBtn("button")
-                .SetButtonStyle(Style.Global.PrimaryBtn)
-                .SetText(new LocStrFormatted("Change Terrain"))
-                .AddToolTip(
-                    "All areas currently designated for dumping will be used as markers for where to change the terrain selected in the terrain dropdown. The height of the terrain will not change, only the material. Useful for making dirt land for farms.")
-                .OnClick(() => _cheatProvider.ChangeTerrain((ProductProto.ID)_selectedLooseProductProto, _disableTerrainPhysicsOnMiningAndDumping, _ignoreMineTowerDesignations));
+            var btn = Builder.NewBtnPrimary("button")
+                    .SetButtonStyle(Style.Global.PrimaryBtn)
+                    .SetText(new LocStrFormatted("Change Terrain"))
+                    .AddToolTip(
+                        "All areas currently designated for dumping will be used as markers for where to change the terrain selected in the terrain dropdown. The height of the terrain will not change, only the material. Useful for making dirt land for farms.")
+                .OnClick(() => _cheatProvider.ChangeTerrain((ProductProto.ID)_selectedLooseProductProto, _ignoreMineTowerDesignations));
+                
 
             return btn;
         }
 
         private Btn BuildRemoveTreesButton()
         {
-            var btn = Builder.NewBtn("button")
+            var btn = Builder.NewBtnPrimary("button")
                 .SetButtonStyle(Style.Global.DangerBtn)
                 .SetText("Remove Trees")
                 .AddToolTip("Instantly remove all trees designated for removal by harvesters. Results in no resources for the player.")
@@ -192,7 +177,7 @@ namespace CaptainOfCheats.Cheats.Terrain
 
         private Btn BuildRefillGroundWaterButton()
         {
-            var btn = Builder.NewBtn("button")
+            var btn = Builder.NewBtnPrimary("button")
                 .SetButtonStyle(Style.Global.PrimaryBtn)
                 .SetText(new LocStrFormatted("Fill Ground Water"))
                 .AddToolTip("All ground reserves of water will be refilled to full capacity")
@@ -203,7 +188,7 @@ namespace CaptainOfCheats.Cheats.Terrain
 
         private Btn BuildRefillGroundCrudeButton()
         {
-            var btn = Builder.NewBtn("button")
+            var btn = Builder.NewBtnPrimary("button")
                 .SetButtonStyle(Style.Global.PrimaryBtn)
                 .SetText(new LocStrFormatted("Fill Ground Crude"))
                 .AddToolTip("All ground reserves of crude oil will be refilled to full capacity")
@@ -226,7 +211,7 @@ namespace CaptainOfCheats.Cheats.Terrain
 
         private void RefreshValues()
         {
-            foreach (var kvp in _switchBtns) kvp.Key.SetState(kvp.Value());
+            foreach (var kvp in _switchBtns) kvp.Key.SetIsOn(kvp.Value());
         }
     }
 }
