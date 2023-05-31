@@ -30,6 +30,7 @@ namespace CaptainOfCheats.UI
         }
 
         public bool IsVisible => true;
+        public bool DeactivateShortcutsIfNotVisible => false;
         public event Action<IToolbarItemInputController> VisibilityChanged;
     }
 }
