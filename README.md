@@ -27,7 +27,6 @@ Cheats
 1. Download the mod zip file from the GitHub Release that cooresponds to your Captain Of Industry game version (it will be named like "CaptainOfCheats_vX.X.X.zip where the X's are replaced by the version of the release"). If a release does not exist for your game version, using an another version may fail to load properly.
 2. Extract the zip file to the `%APPDATA%\Captain of Industry\Mods` directory.
 3. The extracted zip should result in a directory structure like `%APPDATA%\Captain of Industry\Mods\CaptainOfCheats\CaptainOfCheats.dll`. Fix your directory structure to look like this if it does not for any reason.
-4. If you have not previously used this mod in a game, you'll have to start a new game in order for it to initialize properly. Hopefully this changes in the future, but this is the current state of modding in COI.
 5. Enable modding in the game settings under the Miscellaneous tab > Modding toggle button
 
 ## Disclaimers 
