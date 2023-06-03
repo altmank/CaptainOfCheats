@@ -25,6 +25,7 @@ namespace CaptainOfCheats.Cheats.Terrain
         private readonly TerrainCheatProvider _cheatProvider;
         private readonly Dict<SwitchBtn, Func<bool>> _switchBtns = new Dict<SwitchBtn, Func<bool>>();
         private readonly IOrderedEnumerable<LooseProductProto> _looseProductProtos;
+        private bool _disableTerrainPhysicsOnMiningAndDumping = false;
         private ProductProto.ID? _selectedLooseProductProto;
         private bool _ignoreMineTowerDesignations = true;
 
@@ -47,8 +48,11 @@ namespace CaptainOfCheats.Cheats.Terrain
             Builder.AddSectionTitle(tabContainer, new LocStrFormatted("Terrain"), new LocStrFormatted("Select the terrain to use when dumping."));
             var terrainSelector = BuildTerrainSelector(tabContainer);
             terrainSelector.AppendTo(tabContainer, new Vector2(150, 28f), ContainerPosition.LeftOrTop);
+            var terrainPhysicsToggleSwitch = CreateTerrainPhysicsToggleSwitch();
+            terrainPhysicsToggleSwitch.PutToRightOf(terrainSelector, terrainPhysicsToggleSwitch.GetWidth(), Offset.Right(-200f));
             var towerDesignationsToggleSwitch = CreateTerrainIgnoreMineTowerDesignationsToggleSwitch();
-            towerDesignationsToggleSwitch.PutToRightOf(terrainSelector, towerDesignationsToggleSwitch.GetWidth(), Offset.Right(-250f));
+            towerDesignationsToggleSwitch.PutToRightOf(terrainPhysicsToggleSwitch, towerDesignationsToggleSwitch.GetWidth(), Offset.Right(-250f));
+
 
             var instantTerrainActions = Builder.NewPanel("instantTerrainActions").SetBackground(Builder.Style.Panel.ItemOverlay);
             instantTerrainActions.AppendTo(tabContainer, size: 50f, Offset.All(0));
@@ -87,8 +91,13 @@ namespace CaptainOfCheats.Cheats.Terrain
             var buildRefillGroundCrudeButton = BuildRefillGroundCrudeButton();
             buildRefillGroundCrudeButton.AppendTo(otherTerrainButtonContainer, buildRefillGroundCrudeButton.GetOptimalSize(), ContainerPosition.MiddleOrCenter);
 
+            var buildAddTreesButton = BuildAddsTreesButton();
+            buildAddTreesButton.AppendTo(otherTerrainButtonContainer, buildAddTreesButton.GetOptimalSize(), ContainerPosition.MiddleOrCenter);
+            
             var buildRemoveTreesButton = BuildRemoveTreesButton();
             buildRemoveTreesButton.AppendTo(otherTerrainButtonContainer, buildRemoveTreesButton.GetOptimalSize(), ContainerPosition.MiddleOrCenter);
+
+
         }
 
         private Dropdwn BuildTerrainSelector(StackContainer topOf)
@@ -114,6 +123,20 @@ namespace CaptainOfCheats.Cheats.Terrain
 
             return toggleBtn;
         }
+        
+        private SwitchBtn CreateTerrainPhysicsToggleSwitch()
+        {
+            var toggleBtn = Builder.NewSwitchBtn()
+                .SetText("Disable Terrain Physics")
+                .AddTooltip(
+                    "When instantly completing mining or dumping designations, this toggle will indicate whether or not the game physics engine will affect the modified terrain. When turned on, expect very sharp edges on any terrain modifications you make. Note: Vehicles mining/dumping near no-physics terrain may cause no-physics terrain to start responding to physics.")
+                .SetOnToggleAction((toggleVal) => _disableTerrainPhysicsOnMiningAndDumping = toggleVal);
+
+
+            _switchBtns.Add(toggleBtn, () => _disableTerrainPhysicsOnMiningAndDumping);
+
+            return toggleBtn;
+        }
 
         private StackContainer CreateStackContainer()
         {
@@ -134,7 +157,7 @@ namespace CaptainOfCheats.Cheats.Terrain
                 .SetText(new LocStrFormatted("Instant Mine"))
                 .AddToolTip(
                     "All areas currently designated for mining will have their mining operation completed immediately. Results in no resources for the player.")
-                .OnClick(() => _cheatProvider.CompleteAllMiningDesignations(_ignoreMineTowerDesignations));
+                .OnClick(() => _cheatProvider.CompleteAllMiningDesignations(_ignoreMineTowerDesignations, _disableTerrainPhysicsOnMiningAndDumping));
 
             return btn;
         }
@@ -146,7 +169,7 @@ namespace CaptainOfCheats.Cheats.Terrain
                 .SetText(new LocStrFormatted("Instant Dump"))
                 .AddToolTip(
                     "All areas currently designated for dumping will have their dump operation completed immediately. Requires no resources from the player.")
-                .OnClick(() => _cheatProvider.CompleteAllDumpingDesignations((ProductProto.ID)_selectedLooseProductProto, _ignoreMineTowerDesignations));
+                .OnClick(() => _cheatProvider.CompleteAllDumpingDesignationsWithProduct((ProductProto.ID)_selectedLooseProductProto, _disableTerrainPhysicsOnMiningAndDumping, _ignoreMineTowerDesignations));
 
             return btn;
         }
@@ -157,7 +180,7 @@ namespace CaptainOfCheats.Cheats.Terrain
                     .SetButtonStyle(Style.Global.PrimaryBtn)
                     .SetText(new LocStrFormatted("Change Terrain"))
                     .AddToolTip(
-                        "All areas currently designated for dumping will be used as markers for where to change the terrain selected in the terrain dropdown. The height of the terrain will not change, only the material. Useful for making dirt land for farms.")
+                        "All areas currently designated for dumping will be used as markers for where to change the terrain selected in the terrain dropdown. The height of the terrain will not change, only the material of the top 1 layer. Useful for making dirt land for farms.")
                 .OnClick(() => _cheatProvider.ChangeTerrain((ProductProto.ID)_selectedLooseProductProto, _ignoreMineTowerDesignations));
                 
 
@@ -171,6 +194,20 @@ namespace CaptainOfCheats.Cheats.Terrain
                 .SetText("Remove Trees")
                 .AddToolTip("Instantly remove all trees designated for removal by harvesters. Results in no resources for the player.")
                 .OnClick(() => _cheatProvider.RemoveAllSelectedTrees());
+
+            return btn;
+        }
+        
+        private Btn BuildAddsTreesButton()
+        {
+            var btn = Builder.NewBtnPrimary("button")
+                .SetButtonStyle(Style.Global.PrimaryBtn)
+                .SetText("Add Trees")
+                .AddToolTip("All areas currently designated for dumping and not under mining tower control " +
+                            "will be used as markers for where to plant trees. " +
+                            "Trees are planted with moderate spacing and aged 12 " +
+                            "years (please check your local laws regarding minimum age of tree consent).")
+                .OnClick(() => _cheatProvider.AddTreesToDumpingDesignations());
 
             return btn;
         }

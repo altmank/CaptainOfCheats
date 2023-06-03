@@ -91,14 +91,14 @@ namespace CaptainOfCheats.Cheats.General
 
             var instantModeToggle = NewToggleSwitch(
                 "Instant Mode",
-                "Set instant mode ff (unchecked) or on (checked). Enables instant build, instant research, instant upgrades (shipyards, buildings, settlements, mines), instant vehicle construction, and instant repair when on.",
+                "Set instant mode off (unchecked) or on (checked). Enables instant build, instant research, instant upgrades (shipyards, buildings, settlements, mines), instant vehicle construction, and instant repair when on.",
                 toggleVal => _instantBuildCheatProvider.ToggleInstantMode(toggleVal),
                 () => _instantBuildCheatProvider.IsInstantModeEnabled());
             instantModeToggle.AppendTo(firstRowContainer, new Vector2(instantModeToggle.GetWidth(), 25), ContainerPosition.LeftOrTop);
 
             var maintenanceToggle = NewToggleSwitch(
                 "Maintenance",
-                "Set Maintenance ff (unchecked) or on (checked). If on, then your settlement will consume maintenance resources. If off, all consumption of maintenance will stop.",
+                "Set Maintenance off (unchecked) or on (checked). If on, then your settlement will consume maintenance resources. If off, all consumption of maintenance will stop.",
                 toggleVal => _maintenanceCheatProvider.ToggleMaintenance(toggleVal),
                 () => _maintenanceCheatProvider.IsMaintenanceEnabled());
             maintenanceToggle.AppendTo(firstRowContainer, new Vector2(maintenanceToggle.GetWidth(), 25), ContainerPosition.LeftOrTop);
@@ -164,7 +164,6 @@ namespace CaptainOfCheats.Cheats.General
             
             RefreshValues();
         }
-
 
         private SwitchBtn NewToggleSwitch(string text, string tooltip, Action<bool> onToggleAction, Func<bool> isToggleEnabled)
         {
