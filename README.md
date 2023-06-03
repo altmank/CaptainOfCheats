@@ -21,7 +21,8 @@ Cheats
 - Disable disease
 - Refill ground water/oil reserves
 - Terrain modification via mining/dumping designations
-- Tree removal
+- Add Trees/Remove trees
+
 
 ## Installation
 1. Download the mod zip file from the GitHub Release that cooresponds to your Captain Of Industry game version (it will be named like "CaptainOfCheats_vX.X.X.zip where the X's are replaced by the version of the release"). If a release does not exist for your game version, using an another version may fail to load properly.
