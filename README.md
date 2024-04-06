@@ -1,3 +1,6 @@
+# DEPRECATED, NO FUTURE UPDATES PLANNED
+Please check out the awesome cheat mod over at https://github.com/Keranik/COI-Extended for an alternative
+
 ## Captain Of Cheats Mod
 
 A modding tool for Captain of Industry. It has a cheat menu that can be accessed via the F8 key or by clicking the right-most ship wheel icon on your bottom toolbar.
