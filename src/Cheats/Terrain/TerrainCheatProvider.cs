@@ -103,7 +103,7 @@ namespace CaptainOfCheats.Cheats.Terrain
                     return;
                 }
                 
-                var putTheTreeHere =randomizeTreeOffset ? tile.CenterTile2f  : tile.CenterTile2f + _treeManager.GetRandomPlantingOffset((Fix32) 1 / Fix32.Sqrt2);
+                var putTheTreeHere = tile.CenterTile2f;
                 
                 var isShitInTheWay = IsShitInTheWay(tile, putTheTreeHere, treeProto);
                 if (isShitInTheWay)

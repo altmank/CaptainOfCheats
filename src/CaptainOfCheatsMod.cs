@@ -16,6 +16,8 @@ namespace CaptainOfCheats
         public int Version => 1;
         public bool IsUiOnly => false;
 
+        Option<IConfig> IMod.ModConfig => throw new NotImplementedException();
+
         public void Initialize(DependencyResolver resolver, bool gameWasLoaded)
         {
             var version = GetVersion();
@@ -42,6 +44,10 @@ namespace CaptainOfCheats
         public void RegisterDependencies(DependencyResolverBuilder depBuilder, ProtosDb protosDb, bool wasLoaded)
         {
             depBuilder.RegisterAllTypesImplementing<ICheatProvider>(typeof(CaptainOfCheatsMod).Assembly);
+        }
+
+        void IMod.EarlyInit(DependencyResolver resolver)
+        {
         }
     }
 }

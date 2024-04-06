@@ -12,25 +12,34 @@ using UnityEngine;
 namespace CaptainOfCheats.UI
 {
     [GlobalDependency(RegistrationMode.AsEverything)]
-    public class CaptainOfCheatsController : BaseWindowController<CaptainOfCheatsWindowView>, IToolbarItemInputController
+    public class CaptainOfCheatsController : BaseWindowController<CaptainOfCheatsWindowView>, IToolbarItemController
     {
         private readonly ToolbarController _toolbarController;
 
-        public CaptainOfCheatsController(IUnityInputMgr inputManager, IGameLoopEvents gameLoop, CaptainOfCheatsWindowView captainOfCheatsWindowView, ToolbarController toolbarController)
-            : base(inputManager, gameLoop, captainOfCheatsWindowView)
+        public CaptainOfCheatsController(IUnityInputMgr inputManager, IGameLoopEvents gameLoop,UiBuilder uiBuilder, CaptainOfCheatsWindowView captainOfCheatsWindowView, ToolbarController toolbarController)
+            : base(inputManager, gameLoop, uiBuilder, captainOfCheatsWindowView)
         {
             _toolbarController = toolbarController;
         }
 
 
-        public override void RegisterUi(UiBuilder builder)
-        {
-            _toolbarController.AddMainMenuButton("Captain Of Cheats", this, IconsPaths.ToolbarCaptainWheel, 1337f, _ => KeyBindings.FromKey(KbCategory.Tools, KeyCode.F8));
-            base.RegisterUi(builder);
-        }
-
         public bool IsVisible => true;
         public bool DeactivateShortcutsIfNotVisible => false;
-        public event Action<IToolbarItemInputController> VisibilityChanged;
+
+        event Action<IToolbarItemController> IToolbarItemController.VisibilityChanged
+        {
+            add
+            {
+            }
+
+            remove
+            {
+            }
+        }
+
+        public void RegisterIntoToolbar(ToolbarController controller)
+        {
+            _toolbarController.AddMainMenuButton("Captain Of Cheats", this, IconsPaths.ToolbarCaptainWheel, 1337f, _ => KeyBindings.FromKey(KbCategory.Tools, ShortcutMode.Game, KeyCode.F8));
+        }
     }
 }
