@@ -1,5 +1,5 @@
 # DEPRECATED, NO FUTURE UPDATES PLANNED
-Please check out the awesome cheat mod over at https://github.com/Keranik/COI-Extended for an alternative
+Please check out the awesome cheat mod over at https://github.com/Keranik/COI-Extended for an alternative (check releases page for COIExtended.Cheats)
 
 ## Captain Of Cheats Mod
 
