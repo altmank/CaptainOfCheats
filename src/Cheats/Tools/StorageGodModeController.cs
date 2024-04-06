@@ -22,19 +22,22 @@ using Mafi.Unity.InputControl.Toolbar;
 using Mafi.Unity.UiFramework.Styles;
 using Mafi.Unity.UserInterface;
 using UnityEngine;
+using Mafi.Unity.UiFramework;
+using Mafi.Core.Terrain;
 
 namespace CaptainOfCheats.Cheats.Tools
 {
     [GlobalDependency(RegistrationMode.AsAllInterfaces)]
     public class StorageGodModeController : Mafi.Unity.InputControl.Tools.BaseEntityCursorInputController<IStaticEntity>
     {
+        private readonly UiBuilder _uiBuilder;
         private readonly EntitiesIconRenderer _iconRenderer;
-        private readonly ToolbarController _toolbarController;
         private readonly IEntitiesManager _entitiesManager;
         private CursorStyle _cursorStyle;
 
         public StorageGodModeController(
             ProtosDb protosDb,
+            UiBuilder uiBuilder,
             UnlockedProtosDbForUi unlockedProtosDb,
             ShortcutsManager shortcutsManager,
             IUnityInputMgr inputManager,
@@ -46,10 +49,10 @@ namespace CaptainOfCheats.Cheats.Tools
             ToolbarController toolbarController,
             IGameLoopEvents gameLoopEvents,
             EntitiesIconRenderer iconRenderer
-        ) : base(protosDb, unlockedProtosDb, shortcutsManager, inputManager, cursorPickingManager, cursorManager, areaSelectionToolFactory, entitiesManager, highlighter,
+        ) : base(protosDb, uiBuilder, unlockedProtosDb, shortcutsManager, inputManager, cursorPickingManager, cursorManager, areaSelectionToolFactory, entitiesManager, highlighter,
             (Option<NewInstanceOf<TransportTrajectoryHighlighter>>)Option.None, null)
         {
-            _toolbarController = toolbarController;
+            _uiBuilder = uiBuilder;
             _entitiesManager = entitiesManager;
             _iconRenderer = iconRenderer;
 
@@ -67,25 +70,12 @@ namespace CaptainOfCheats.Cheats.Tools
             }
         }
 
-        public override void RegisterUi(UiBuilder builder)
-        {
-            _toolbarController
-                .AddLeftMenuButton("Storage God Mode", this, "Assets/Unity/UserInterface/EntityIcons/Storage.svg", 70f, manager => KeyBindings.EMPTY)
-                .AddTooltip(new LocStrFormatted("[Captain of Cheats] Enable god mode on storage buildings. " +
-                                                "When a storage has god mod enabled, drag the green slider to the right to get infinite product from that storage. " +
-                                                "Drag the red slider to the left to destroy that product in the storage (or any coming in via transport)."));
-            
-            _cursorStyle = new CursorStyle("StorageGodModeControllerStyle", "Assets/Unity/UserInterface/EntityIcons/Storage.svg", new Vector2(14f, 14f));
-            InitializeUi(builder, _cursorStyle, builder.Audio.Assign, ColorRgba.White, ColorRgba.Green);
-            base.RegisterUi(builder);
-        }
-
         protected override bool OnFirstActivated(IStaticEntity hoveredEntity, Lyst<IStaticEntity> selectedEntities, Lyst<SubTransport> selectedPartialTransports)
         {
             return false;
         }
 
-        protected override void OnEntitiesSelected(IIndexable<IStaticEntity> selectedEntities, IIndexable<SubTransport> selectedPartialTransports, bool isAreaSelection, bool isLeftMouse)
+        protected override void OnEntitiesSelected(IIndexable<IStaticEntity> selectedEntities, IIndexable<SubTransport> selectedPartialTransports, bool isAreaSelection, bool isLeftMouse, RectangleTerrainArea2i? area)
         {
             if (selectedEntities.Count == 0) return;
 
@@ -121,5 +111,18 @@ namespace CaptainOfCheats.Cheats.Tools
 
             return false;
         }
+
+        protected override void RegisterToolbar(ToolbarController controller)
+        {
+            controller
+                .AddLeftMenuButton("Storage God Mode", this, "Assets/Unity/UserInterface/EntityIcons/Storage.svg", 70f, manager => KeyBindings.EMPTY)
+                .AddTooltip(new LocStrFormatted("[Captain of Cheats] Enable god mode on storage buildings. " +
+                                                "When a storage has god mod enabled, drag the green slider to the right to get infinite product from that storage. " +
+                                                "Drag the red slider to the left to destroy that product in the storage (or any coming in via transport)."));
+
+            _cursorStyle = new CursorStyle("StorageGodModeControllerStyle", "Assets/Unity/UserInterface/EntityIcons/Storage.svg", new Vector2(14f, 14f));
+            InitializeUi(_cursorStyle, _uiBuilder.Audio.Assign, ColorRgba.White, ColorRgba.Green);
+        }
+
     }
 }

@@ -6,6 +6,8 @@ using Mafi;
 using Mafi.Core;
 using Mafi.Core.PropertiesDb;
 using Mafi.Core.Vehicles;
+using UnityEngine;
+using Logger = CaptainOfCheats.Logging.Logger;
 
 namespace CaptainOfCheats.Cheats.Vehicles
 {

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>Library</OutputType>
-		<TargetFramework>net46</TargetFramework>
+		<TargetFramework>net472</TargetFramework>
 		<Configurations>Release</Configurations>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	</PropertyGroup>
@@ -13,6 +13,9 @@
 		<OutputPath>bin\Release\</OutputPath>		
 	</PropertyGroup>
 	<PropertyGroup>
+	</PropertyGroup>
+	<PropertyGroup>
+		<LangVersion>10.0</LangVersion>
 	</PropertyGroup>
 	<ItemGroup>
 		<Reference Include="System" />
